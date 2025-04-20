@@ -1,0 +1,22 @@
+{
+    "name": "luizalbertobm/mycommands",
+    "description": "A bunch of useful terminal commands",
+    "type": "library",
+    "require": {
+        "symfony/console": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "MyCommands\\": "src/"
+        }
+    },
+    "bin": [
+        "bin/console"
+    ],
+    "authors": [
+        {
+            "name": "Luiz Mesquita",
+            "email": "luizalbertobm@gmail.com"
+        }
+    ]
+}
