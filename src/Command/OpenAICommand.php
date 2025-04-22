@@ -113,7 +113,11 @@ class OpenAICommand extends Command
      */
     private function processResponse(array $data, bool $commit): void
     {
-        $this->io->section('Response');
+        if($commit) {
+            $this->io->section('Commit message');
+        }else{
+            $this->io->section('Response');
+        }
         foreach ($data['choices'] as $choice) {
             $content = $choice['message']['content'] ?? '';
             $content = trim($content, characters: "`");
