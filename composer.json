@@ -3,7 +3,11 @@
     "description": "A bunch of useful terminal commands",
     "type": "library",
     "require": {
-        "symfony/console": "^7.2"
+        "symfony/console": "^7.2",
+        "symfony/process": "^7.2",
+        "symfony/http-client": "^7.2",
+        "react/http": "^1.11",
+        "react/event-loop": "^1.5"
     },
     "autoload": {
         "psr-4": {

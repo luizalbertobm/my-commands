@@ -4,11 +4,13 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
+use MyCommands\Command\OpenAICommand;
 
 $app = new Application('My Commands', '1.0.0');
 
 $commands = [
     HelloCommand::class,
+    OpenAICommand::class,
 ];
 
 foreach ($commands as $command) {
