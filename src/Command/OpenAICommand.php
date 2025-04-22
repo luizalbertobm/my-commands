@@ -72,7 +72,7 @@ class OpenAICommand extends Command
             $prompt = $this->io->ask('Enter prompt', Message::DEFAULT_PROMPT->value);
         }
 
-        
+
         if ($commit) {
             try {
                 $prompt = GitHelper::buildCommitPrompt();
@@ -108,14 +108,14 @@ class OpenAICommand extends Command
     /**
      * Summary of processResponse
      * @param array<string, mixed> $data
-     * @param string $prompt
+     * @param bool $commit
      * @return void
      */
     private function processResponse(array $data, bool $commit): void
     {
-        if($commit) {
+        if ($commit) {
             $this->io->section('Commit message');
-        }else{
+        } else {
             $this->io->section('Response');
         }
         foreach ($data['choices'] as $choice) {
@@ -143,15 +143,24 @@ class OpenAICommand extends Command
      */
     private function cleanMessage(string $message): string
     {
+        if (empty($message)) {
+            return '';
+        }
+
         // Primeiro remover blocos de código completos se existirem
-        $message = preg_replace('/^```[\w]*\s*([\s\S]*?)\s*```$/m', '$1', $message);
-        
+        $result = preg_replace('/^```[\w]*\s*([\s\S]*?)\s*```$/m', '$1', $message);
+        // Garantir que o resultado é string
+        $result = $result === null ? $message : $result;
+
         // Remover outros caracteres especiais comuns no início e fim
-        $message = preg_replace('/^[\s`*#>_~\-+:"\']*/', '', $message);  // início
-        $message = preg_replace('/[\s`*#>_~\-+:"\']*$/', '', $message);  // fim
-        
+        $result = preg_replace('/^[\s`*#>_~\-+:"\']*/', '', $result);
+        $result = $result === null ? $message : $result;
+
+        $result = preg_replace('/[\s`*#>_~\-+:"\']*$/', '', $result);
+        $result = $result === null ? $message : $result;
+
         // Finalmente um trim simples para espaços extras
-        return trim($message);
+        return trim($result);
     }
 
 }

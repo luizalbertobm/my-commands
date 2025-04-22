@@ -35,20 +35,18 @@ class GitHelper
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+
         $process = new Process(['git', 'commit', '-m', $message]);
         $process->run($outputCallback);
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+
         $process = new Process(['git', 'push']);
         $process->run($outputCallback);
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
-        if ($outputCallback) {
-            $outputCallback($process->getOutput());
-        }
-
     }
 
     public static function buildCommitPrompt(): string
