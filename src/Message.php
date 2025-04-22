@@ -4,18 +4,18 @@ namespace MyCommands;
 
 enum Message: string
 {
-    case HELP = 'Use this command to send a prompt to OpenAI or generate a git commit message from current diff.';
+    case HELP = 'Use this command to send a prompt to OpenAI or generate a git commit message from current diff. Use the semantic commit message format.';
     case API_KEY_NOT_FOUND = 'OpenAI API key not found.';
     case API_KEY_INSTRUCTIONS = 'Create you API key at https://platform.openai.com/api-keys.';
     case API_KEY_CREATE = 'Type your OpenAI API key';
-    case ENTER_PROMPT = 'Please type your request and press Enter:';
+    case ENTER_PROMPT = 'Please type your request and press Enter';
     case EMPTY_PROMPT = 'Empty prompt received, using default help request.';
-    case DEFAULT_PROMPT = 'Show me 5 useful Linux terminal commands with examples.';
+    case DEFAULT_PROMPT = 'What is the brazilian capital?';
     case COMMIT_ERR = 'Failed to generate commit message: %s';
     case NO_CHANGES = 'No changes detected to generate a commit message.';
     case GIT_UNAVAILABLE = 'Git is not available on this system.';
     case SYSTEM_ROLE = 'You are a Linux terminal assistant.';
-    case CONNECTING = 'Connecting to OpenAI, please wait...';
+    case CONNECTING = 'Processing your prompt, please wait...';
     case REQUEST_COMPLETED = 'Request completed';
     case UNKNOWN_ERROR = 'Unknown API error';
     case API_ERROR = 'OpenAI API error: %s';

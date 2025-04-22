@@ -64,7 +64,7 @@ class OpenAICommand extends Command
             } catch (\RuntimeException $e) {
                 if ($e->getCode() === Command::INVALID) {
                     $this->io->warning($e->getMessage());
-                    return $e->getCode();
+                    return Command::INVALID;
                 }
                 $this->io->error($e->getMessage());
                 return Command::FAILURE;
@@ -239,7 +239,7 @@ class OpenAICommand extends Command
         ]);
 
         $indicator = new ProgressIndicator($this->io, 'verbose', 100, self::SPINNER_CHARS);
-        $indicator->start('Connecting to OpenAI...');
+        $indicator->start(Message::CONNECTING->value);
         $loop->addPeriodicTimer(0.2, fn() => $indicator->advance());
 
         $responseData = null;
@@ -280,7 +280,13 @@ class OpenAICommand extends Command
      */
     private function processResponse(array $data, string $prompt): void
     {
-        $this->io->section('Response');
+        // check if it is a commit
+        if (str_contains($prompt, 'commit')) {
+            $this->io->section('Commit message:');
+        } else {
+            $this->io->section(Message::RESPONSE_HEADER->value);
+        }
+        
         foreach ($data['choices'] as $choice) {
             $content = $choice['message']['content'] ?? '';
             $message = trim(preg_replace('/```(?:\w+)?\s*(.*?)\s*```/s', '$1', $content));
