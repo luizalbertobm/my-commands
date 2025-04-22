@@ -124,6 +124,11 @@ class OpenAICommand extends Command
 
             // Persistir a chave no arquivo de ambiente do shell, se possível
             if ($envFile && is_writable($envFile)) {
+                $envContent = file_get_contents($envFile);
+                if (strpos($envContent, "export " . self::ENV_API_KEY . "=") !== false) {
+                    $this->io->warning("API key already exists in $envFile. Skipping addition.");
+                    return $key;
+                }
                 file_put_contents($envFile, "\nexport " . self::ENV_API_KEY . "=\"$key\"\n", FILE_APPEND);
                 $this->io->success("API key saved to $envFile.");
             } else {
