@@ -124,8 +124,10 @@ class OpenAICommand extends Command
             $this->io->writeln($message);
             if ($commit) {
                 if ($this->io->confirm(Message::COMMIT_CONFIRM->value, false)) {
-                    GitHelper::commitAndPush($message, function ($output) {
-                        $this->io->writeln($output);
+                    GitHelper::commitAndPush($message, function ($type, $buffer) {
+                        if (!empty(trim($buffer))) {
+                            $this->io->write($buffer);
+                        }
                     });
                     $this->io->success(Message::COMMIT_SUCCESS->value);
                 } else {
