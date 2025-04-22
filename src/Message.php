@@ -31,11 +31,11 @@ enum Message: string
 
     /**
      * Format message with sprintf
+     *
+     * @param mixed ...$args
      */
-    public function format(...$args): string
+    public function format(mixed ...$args): string
     {
         return sprintf($this->value, ...$args);
     }
-    
-   
 }

@@ -1,31 +1,34 @@
 <?php
+
 namespace MyCommands\Command;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
-// $progressBar = new ProgressBar($output, 50);
-// https://symfony.com/doc/current/components/console/helpers/progressindicator.html
-// https://symfony.com/doc/current/components/console/helpers/questionhelper.html
-
 #[AsCommand(
     name: 'hello',
-    description: 'Exibe uma saudação personalizada.',
+    description: 'Displays a personalized greeting.',
 )]
 class HelloCommand extends Command
 {
-
     protected function configure(): void
     {
-        $this->setHelp('Este comando permite que você receba uma saudação na linha de comando.');
+        $this->setHelp('This command allows you to receive a greeting in the command line.');
+        $this
+            ->addArgument('name', InputArgument::OPTIONAL, 'Your name');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('Olá, Luiz Alberto! Este é seu comando Symfony Console.');
+        $name = $input->getArgument('name');
+        if ($name) {
+            $output->writeln(sprintf('Hello, %s! This is your Symfony Console command.', $name));
+        } else {
+            $output->writeln('Hello! This is your Symfony Console command.');
+        }
         return Command::SUCCESS;
     }
 }
