@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Helper\ProgressIndicator;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -273,6 +274,24 @@ class OpenAICommand extends Command
     }
 
     /**
+     * Renders the tokens usage information in a table format.
+     *
+     * @param array $usage The usage data containing token counts
+     */
+    private function renderTokensTable(array $usage): void
+    {
+        $table = new Table($this->io);
+        $table
+            ->setHeaders(['Type', 'Tokens'])
+            ->setRows([
+                ['Prompt', $usage['prompt_tokens'] ?? 0],
+                ['Completion', $usage['completion_tokens'] ?? 0],
+                ['Total', $usage['total_tokens'] ?? 0],
+            ]);
+        $table->render();
+    }
+
+    /**
      * Processes the OpenAI API response and displays it.
      *
      * @param array $data The response data
@@ -280,26 +299,21 @@ class OpenAICommand extends Command
      */
     private function processResponse(array $data, string $prompt): void
     {
+        if (isset($data['usage'])) {
+            $this->renderTokensTable($data['usage']);
+        }
+        
         // check if it is a commit
         if (str_contains($prompt, 'commit')) {
             $this->io->section('Commit message:');
         } else {
-            $this->io->section(Message::RESPONSE_HEADER->value);
+            $this->io->section('Response:');
         }
         
         foreach ($data['choices'] as $choice) {
             $content = $choice['message']['content'] ?? '';
             $message = trim(preg_replace('/```(?:\w+)?\s*(.*?)\s*```/s', '$1', $content));
             $this->io->text($message);
-            if (isset($data['usage'])) {
-                $u = $data['usage'];
-                $this->io->info(sprintf(
-                    'Tokens used: prompt %d, completion %d, total %d',
-                    $u['prompt_tokens'] ?? 0,
-                    $u['completion_tokens'] ?? 0,
-                    $u['total_tokens'] ?? 0
-                ));
-            }
 
             // check if the argument prompt is 'commit'
             if (str_contains($prompt, 'commit')) {

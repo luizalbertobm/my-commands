@@ -19,7 +19,6 @@ enum Message: string
     case REQUEST_COMPLETED = 'Request completed';
     case UNKNOWN_ERROR = 'Unknown API error';
     case API_ERROR = 'OpenAI API error: %s';
-    case RESPONSE_HEADER = '=== Response ===';
     case NO_RESPONSE = 'No response content received from OpenAI.';
     case EMPTY_RESPONSE = 'Empty response';
     case TOKENS_INFO = 'Tokens: %d prompt + %d completion = %d total';
