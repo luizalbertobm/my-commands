@@ -119,9 +119,8 @@ class OpenAICommand extends Command
             $this->io->section('Response');
         }
         foreach ($data['choices'] as $choice) {
-            $content = $choice['message']['content'] ?? '';
-            $content = trim($content, characters: "`");
-            $message = trim(preg_replace('/```(?:\w+)?\s*(.*?)\s*```/s', '$1', $content));
+            $message = $choice['message']['content'] ?? '';
+            $message = $this->cleanMessage($message);
             $this->io->writeln($message);
             if ($commit) {
                 if ($this->io->confirm(Message::COMMIT_CONFIRM->value, false)) {
@@ -135,4 +134,24 @@ class OpenAICommand extends Command
             }
         }
     }
+
+    /**
+     * Clean the message by removing unwanted characters
+     *
+     * @param string $message The message to clean
+     * @return string The cleaned message
+     */
+    private function cleanMessage(string $message): string
+    {
+        // Primeiro remover blocos de código completos se existirem
+        $message = preg_replace('/^```[\w]*\s*([\s\S]*?)\s*```$/m', '$1', $message);
+        
+        // Remover outros caracteres especiais comuns no início e fim
+        $message = preg_replace('/^[\s`*#>_~\-+:"\']*/', '', $message);  // início
+        $message = preg_replace('/[\s`*#>_~\-+:"\']*$/', '', $message);  // fim
+        
+        // Finalmente um trim simples para espaços extras
+        return trim($message);
+    }
+
 }
