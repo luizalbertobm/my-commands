@@ -62,6 +62,10 @@ class OpenAICommand extends Command
             try {
                 $commitPrompt = $this->buildCommitPrompt();
             } catch (\RuntimeException $e) {
+                if ($e->getCode() === Command::INVALID) {
+                    $this->io->warning($e->getMessage());
+                    return $e->getCode();
+                }
                 $this->io->error($e->getMessage());
                 return Command::FAILURE;
             }
@@ -170,8 +174,7 @@ class OpenAICommand extends Command
         if (empty(trim($diff))) {
             $diff = $this->getGitDiff('');
             if (empty(trim($diff))) {
-                $this->io->warning(Message::NO_CHANGES->value);
-                throw new \RuntimeException(Message::NO_CHANGES->value);
+                throw new \RuntimeException(Message::NO_CHANGES->value, Command::INVALID);
             }
         }
 
