@@ -116,6 +116,7 @@ class OpenAICommand extends Command
         $this->io->section('Response');
         foreach ($data['choices'] as $choice) {
             $content = $choice['message']['content'] ?? '';
+            $content = trim($content, characters: "`");
             $message = trim(preg_replace('/```(?:\w+)?\s*(.*?)\s*```/s', '$1', $content));
             $this->io->writeln($message);
             if ($commit) {
