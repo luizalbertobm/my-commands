@@ -171,8 +171,7 @@ class OpenAICommand extends Command
             $diff = $this->getGitDiff('');
             if (empty(trim($diff))) {
                 $this->io->warning(Message::NO_CHANGES->value);
-             
-                return Command::FAILURE;
+                throw new \RuntimeException(Message::NO_CHANGES->value);
             }
         }
 
