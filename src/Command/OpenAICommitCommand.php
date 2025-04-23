@@ -23,7 +23,7 @@ use Symfony\Component\Process\Process;
 
 #[AsCommand(
     name: 'openai:commit',
-    description: 'Call OpenAI API to generate a semantic git commit message based on git diif for the current place.'
+    description: 'Uses OpenAI API to generate a semantic git commit message based on git diff.'
 )]
 class OpenAICommitCommand extends Command
 {
