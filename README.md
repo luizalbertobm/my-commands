@@ -44,6 +44,11 @@ Before installing and running the project, ensure you have the following:
    mycommands list
    ```
 
+6. Set up your OpenAI API Key:
+   ```bash
+   mycommands openai --setup
+   ```
+
 ## Usage
 
 Run the following command to see the available commands:
@@ -53,12 +58,12 @@ mycommands list
 
 ### Example: Generate a Semantic Commit Message
 ```bash
-mycommands openai commit
+mycommands openai:commit
 ```
 
 ### Example: Send a Custom Prompt to OpenAI
 ```bash
-mycommands openai "Write a poem about technology."
+mycommands openai:ask "Write a poem about technology."
 ```
 
 ## Development
