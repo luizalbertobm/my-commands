@@ -52,7 +52,7 @@ class OpenAICommand extends Command
             $this->io->note(Message::API_KEY_INSTRUCTIONS->format(OpenAIService::OPENAI_API_KEY));
             $apiKey = $this->io->ask(Message::API_KEY_CREATE->value);
             EnvironmentHelper::saveEnvVar(
-                OpenAIService::OPENAI_API_KEY, 
+                OpenAIService::OPENAI_API_KEY,
                 $apiKey,
             );
             $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);

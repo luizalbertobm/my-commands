@@ -1,12 +1,15 @@
-# Dependências do Composer
+# Composer dependencies
 /vendor/
 
+# Project files
+.php-cs-fixer.cache
 /.env
 /.env.local
 
+# IDE files
 /.idea/
 /.vscode/
 
-# Arquivos do sistema operacional
+# OS files
 .DS_Store
 Thumbs.db
