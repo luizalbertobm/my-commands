@@ -85,4 +85,23 @@ class EnvironmentHelper
 
         return null;
     }
+
+    /**
+     * Get an environment variable from the shell profile file.
+     * This method reads the shell profile file and extracts the value of the specified environment variable.
+     * @param string $envVarName
+     * @return string|null
+     */
+    public static function getEnvVarFromShell(string $envVarName): ?string
+    {
+        $shell = self::getShell();
+        if ($shell && file_exists($shell)) {
+            $content = file_get_contents($shell);
+            if ($content !== false) {
+                preg_match("/export $envVarName='([^']+)'/", $content, $matches);
+                return $matches[1] ?? null;
+            }
+        }
+        return null;
+    }
 }
