@@ -55,6 +55,7 @@ class OpenAICommand extends Command
                 OpenAIService::OPENAI_API_KEY, 
                 $apiKey,
             );
+            $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
         }
 
         if (!$apiKey) {

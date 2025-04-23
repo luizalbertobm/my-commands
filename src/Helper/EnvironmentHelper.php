@@ -29,13 +29,15 @@ class EnvironmentHelper
         $shell = self::getShell();
 
         if ($shell) {
-            if (self::isEnvVarInShellFile($envVarName, $shell)) {
-                return false; // Não adiciona duplicidade
+            if (!self::isEnvVarInShellFile($envVarName, $shell)) {
+                file_put_contents($shell, "export $envVarName='$key'\n", FILE_APPEND);
             }
 
-            file_put_contents($shell, "export $envVarName='$key'\n", FILE_APPEND);
-            self::reloadShell($shell);
+            putenv("$envVarName=$key");
+            $_SERVER[$envVarName] = $key;
 
+            $test = getenv($envVarName);
+            error_log("$envVarName=$test");
             return true;
         }
 
@@ -85,25 +87,5 @@ class EnvironmentHelper
         }
 
         return null;
-    }
-
-    /**
-     * Reload the shell profile file to apply changes.
-     * This method uses the source command to reload the shell profile.
-     * @param string $profileFile
-     * @return void
-     */
-    private static function reloadShell(string $profileFile): void
-    {
-        $shell = getenv('SHELL') ?: '/bin/bash';
-        $command = match (basename($shell)) {
-            'zsh' => "source $profileFile",
-            'bash' => "source $profileFile",
-            default => null,
-        };
-
-        if ($command) {
-            shell_exec($command);
-        }
     }
 }
