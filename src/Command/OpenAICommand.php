@@ -49,9 +49,12 @@ class OpenAICommand extends Command
         $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
         if (!$apiKey) {
             $this->io->error(Message::API_KEY_NOT_FOUND->value);
-            $this->io->info(Message::API_KEY_INSTRUCTIONS->format(OpenAIService::OPENAI_API_KEY));
-            $this->io->askHidden(Message::API_KEY_CREATE->value);
-            $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
+            $this->io->note(Message::API_KEY_INSTRUCTIONS->format(OpenAIService::OPENAI_API_KEY));
+            $apiKey = $this->io->ask(Message::API_KEY_CREATE->value);
+            EnvironmentHelper::saveEnvVar(
+                OpenAIService::OPENAI_API_KEY, 
+                $apiKey,
+            );
         }
 
         if (!$apiKey) {
