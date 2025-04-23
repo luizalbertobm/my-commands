@@ -5,7 +5,6 @@ require __DIR__ . '/../vendor/autoload.php';
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
 use MyCommands\Command\OpenAIAskCommand;
-use MyCommands\Command\OpenAICommand;
 use MyCommands\Command\OpenAICommitCommand;
 
 $app = new Application('My Commands', '1.0.0');
