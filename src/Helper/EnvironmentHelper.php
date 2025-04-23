@@ -112,4 +112,19 @@ class EnvironmentHelper
         }
         return null;
     }
+
+    public static function removeEnvVar(string $envVarName): bool
+    {
+        $shell = self::getShell();
+        if ($shell && file_exists($shell)) {
+            $content = file_get_contents($shell);
+            if ($content !== false) {
+                $newContent = preg_replace("/export $envVarName='[^']+'\n/", '', $content);
+                file_put_contents($shell, $newContent);
+                unset($_SERVER[$envVarName]);
+                return true;
+            }
+        }
+        return false;
+    }
 }

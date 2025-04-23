@@ -37,7 +37,7 @@ class OpenAIAskCommand extends Command
     {
         $this
             ->setHelp(Message::HELP->value)
-            ->addArgument('prompt', InputArgument::OPTIONAL, 'Text to send to OpenAI')
+            ->addOption('reset', 'r', InputOption::VALUE_NONE, 'Reset the OpenAI API key')
             ->addOption('model', 'm', InputOption::VALUE_REQUIRED, 'OpenAI model', OpenAIService::DEFAULT_MODEL)
             ->addOption('max-tokens', 't', InputOption::VALUE_REQUIRED, 'Maximum tokens', 600);
     }

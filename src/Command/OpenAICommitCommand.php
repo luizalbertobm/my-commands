@@ -37,7 +37,7 @@ class OpenAICommitCommand extends Command
     {
         $this
             ->setHelp(Message::HELP->value)
-            // ->addArgument('prompt', InputArgument::OPTIONAL, 'Text to send to OpenAI')
+            ->addOption('reset', 'r', InputOption::VALUE_NONE, 'Reset the OpenAI API key')
             ->addOption('model', 'm', InputOption::VALUE_REQUIRED, 'OpenAI model', OpenAIService::DEFAULT_MODEL)
             ->addOption('max-tokens', 't', InputOption::VALUE_REQUIRED, 'Maximum tokens', 600);
     }
@@ -46,6 +46,15 @@ class OpenAICommitCommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
 
+        if ($input->getOption('reset')) {
+            $this->io->note("Reseting env variable:".OpenAIService::OPENAI_API_KEY);
+            EnvironmentHelper::removeEnvVar(    
+                OpenAIService::OPENAI_API_KEY,
+            );
+            $this->io->success("Env variable removed");
+
+            return Command::SUCCESS;
+        }
         $apiKey = $this->getOrSetApiKey();
 
         $openAIService = new OpenAIService(
