@@ -9,7 +9,7 @@ Before installing and running the project, ensure you have the following:
 - **PHP 8.1 or higher**: Required to run the commands.
 - **Composer**: For managing dependencies.
 - **Git**: For version control and generating commit messages.
-- **OpenAI API Key**: Needed to interact with the OpenAI API. You can obtain one from [OpenAI's website](https://platform.openai.com/signup/).
+- **OpenAI API Key**: Needed to interact with the OpenAI API. You can obtain one from [OpenAI's website](https://platform.openai.com/api-keys).
 
 ## Features
 
