@@ -35,9 +35,6 @@ class EnvironmentHelper
 
             putenv("$envVarName=$key");
             $_SERVER[$envVarName] = $key;
-
-            $test = getenv($envVarName);
-            error_log("$envVarName=$test");
             return true;
         }
 
