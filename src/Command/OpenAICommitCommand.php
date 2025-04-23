@@ -22,10 +22,10 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 #[AsCommand(
-    name: 'openai',
-    description: 'Call OpenAI API to generate a response or a semantic git commit message.'
+    name: 'openai:commit',
+    description: 'Call OpenAI API to generate a semantic git commit message based on git diif for the current place.'
 )]
-class OpenAICommand extends Command
+class OpenAICommitCommand extends Command
 {
     private SymfonyStyle $io;
     public function __construct()
@@ -37,7 +37,7 @@ class OpenAICommand extends Command
     {
         $this
             ->setHelp(Message::HELP->value)
-            ->addArgument('prompt', InputArgument::OPTIONAL, 'Text to send to OpenAI')
+            // ->addArgument('prompt', InputArgument::OPTIONAL, 'Text to send to OpenAI')
             ->addOption('model', 'm', InputOption::VALUE_REQUIRED, 'OpenAI model', OpenAIService::DEFAULT_MODEL)
             ->addOption('max-tokens', 't', InputOption::VALUE_REQUIRED, 'Maximum tokens', 600);
     }
@@ -46,22 +46,7 @@ class OpenAICommand extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
 
-        $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
-        if (!$apiKey) {
-            $this->io->error(Message::API_KEY_NOT_FOUND->value);
-            $this->io->note(Message::API_KEY_INSTRUCTIONS->format(OpenAIService::OPENAI_API_KEY));
-            $apiKey = $this->io->ask(Message::API_KEY_CREATE->value);
-            EnvironmentHelper::saveEnvVar(
-                OpenAIService::OPENAI_API_KEY,
-                $apiKey,
-            );
-            $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
-        }
-
-        if (!$apiKey) {
-            $this->io->error(Message::API_KEY_NOT_FOUND->value);
-            return Command::FAILURE;
-        }
+        $apiKey = $this->getOrSetApiKey();
 
         $openAIService = new OpenAIService(
             $apiKey,
@@ -70,25 +55,16 @@ class OpenAICommand extends Command
             600
         );
 
-        $prompt = (string)$input->getArgument('prompt');
-        $commit = $prompt === 'commit';
-        if (!$prompt) {
-            $prompt = $this->io->ask('Enter prompt', Message::DEFAULT_PROMPT->value);
-        }
-
-
-        if ($commit) {
-            try {
-                $prompt = GitHelper::buildCommitPrompt();
-            } catch (\RuntimeException $e) {
-                if ($e->getCode() === Command::INVALID) {
-                    $this->io->warning($e->getMessage());
-                } else {
-                    $this->io->error($e->getMessage());
-                }
-
-                return (int)$e->getCode();
+        try {
+            $prompt = GitHelper::buildCommitPrompt();
+        } catch (\RuntimeException $e) {
+            if ($e->getCode() === Command::INVALID) {
+                $this->io->warning($e->getMessage());
+            } else {
+                $this->io->error($e->getMessage());
             }
+
+            return (int)$e->getCode();
         }
 
         $responseData = $openAIService->processPrompt(
@@ -104,7 +80,7 @@ class OpenAICommand extends Command
             return Command::FAILURE;
         }
 
-        $this->processResponse($responseData, $commit);
+        $this->processResponse($responseData);
 
         return Command::SUCCESS;
     }
@@ -112,31 +88,26 @@ class OpenAICommand extends Command
     /**
      * Summary of processResponse
      * @param array<string, mixed> $data
-     * @param bool $commit
      * @return void
      */
-    private function processResponse(array $data, bool $commit): void
+    private function processResponse(array $data): void
     {
-        if ($commit) {
-            $this->io->section('Commit message');
-        } else {
-            $this->io->section('Response');
-        }
+
+        $this->io->section('Commit message');
         foreach ($data['choices'] as $choice) {
             $message = $choice['message']['content'] ?? '';
             $message = $this->cleanMessage($message);
             $this->io->writeln($message);
-            if ($commit) {
-                if ($this->io->confirm(Message::COMMIT_CONFIRM->value, false)) {
-                    GitHelper::commitAndPush($message, function ($type, $buffer) {
-                        if (!empty(trim($buffer))) {
-                            $this->io->write($buffer);
-                        }
-                    });
-                    $this->io->success(Message::COMMIT_SUCCESS->value);
-                } else {
-                    $this->io->note(Message::ACTION_CANCELED->value);
-                }
+
+            if ($this->io->confirm(Message::COMMIT_CONFIRM->value, false)) {
+                GitHelper::commitAndPush($message, function ($type, $buffer) {
+                    if (!empty(trim($buffer))) {
+                        $this->io->write($buffer);
+                    }
+                });
+                $this->io->success(Message::COMMIT_SUCCESS->value);
+            } else {
+                $this->io->note(Message::ACTION_CANCELED->value);
             }
         }
     }
@@ -169,4 +140,24 @@ class OpenAICommand extends Command
         return trim($result);
     }
 
+    private function getOrSetApiKey(): string
+    {
+        $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
+        if (!$apiKey) {
+            $this->io->error(Message::API_KEY_NOT_FOUND->value);
+            $this->io->note(Message::API_KEY_INSTRUCTIONS->format(OpenAIService::OPENAI_API_KEY));
+            $apiKey = $this->io->ask(Message::API_KEY_CREATE->value);
+            EnvironmentHelper::saveEnvVar(
+                OpenAIService::OPENAI_API_KEY,
+                $apiKey,
+            );
+            $apiKey = EnvironmentHelper::getEnvVar(OpenAIService::OPENAI_API_KEY);
+        }
+
+        if (!$apiKey) {
+            throw new \RuntimeException(Message::API_KEY_NOT_FOUND->value);
+        };
+
+        return $apiKey;
+    }
 }
