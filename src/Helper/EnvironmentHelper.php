@@ -14,7 +14,15 @@ class EnvironmentHelper
      */
     public static function getEnvVar(string $envVarName): ?string
     {
-        return getenv($envVarName) ?: $_SERVER[$envVarName] ?? null;
+        // Verificar no ambiente atual
+        $value = getenv($envVarName) ?: $_SERVER[$envVarName] ?? null;
+
+        // Se não estiver no ambiente atual, buscar no arquivo de perfil do shell
+        if (!$value) {
+            $value = self::getEnvVarFromShell($envVarName);
+        }
+
+        return $value;
     }
 
     /**
