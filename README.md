@@ -44,11 +44,6 @@ Before installing and running the project, ensure you have the following:
    mycommands list
    ```
 
-6. Set up your OpenAI API Key:
-   ```bash
-   mycommands openai --setup
-   ```
-
 ## Usage
 
 Run the following command to see the available commands:
