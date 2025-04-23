@@ -14,8 +14,10 @@ Before installing and running the project, ensure you have the following:
 ## Features
 
 - Generate semantic Git commit messages using OpenAI.
-- Easily extendable with additional commands.
-- Built with Symfony Console for a robust CLI experience.
+- Send custom prompts to OpenAI and receive responses.
+- Automate repetitive tasks with custom commands.
+- Easily extendable architecture for adding new commands.
+- Code quality tools for maintaining code standards.
 
 ## Installation
 
