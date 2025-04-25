@@ -34,7 +34,7 @@ enum Message: string
     case API_REQUEST_FAILED = 'API request failed: %s';
 
     /**
-     * Format message with sprintf
+     * Format message with sprintf.
      *
      * @param mixed ...$args
      */

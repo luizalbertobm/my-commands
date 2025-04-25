@@ -16,7 +16,7 @@ class OpenAIPayload
     }
 
     /**
-     * Converts the payload object to an array for API request
+     * Converts the payload object to an array for API request.
      *
      * @return array<string, mixed> The API request payload
      */
@@ -26,10 +26,10 @@ class OpenAIPayload
             'model' => $this->model,
             'messages' => [
                 ['role' => 'system', 'content' => Message::SYSTEM_ROLE->value],
-                ['role' => 'user', 'content' => $this->prompt]
+                ['role' => 'user', 'content' => $this->prompt],
             ],
             'temperature' => $this->temperature,
-            'max_tokens' => $this->maxTokens
+            'max_tokens' => $this->maxTokens,
         ];
     }
 }

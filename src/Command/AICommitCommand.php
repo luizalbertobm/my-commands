@@ -5,27 +5,19 @@ namespace MyCommands\Command;
 use MyCommands\Helper\EnvironmentHelper;
 use MyCommands\Helper\GitHelper;
 use MyCommands\Message;
-use MyCommands\Service\EnvironmentService;
-use MyCommands\Service\GitService;
 use MyCommands\Service\OpenAIService;
-use Psr\Http\Message\ResponseInterface;
-use React\EventLoop\Loop;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Helper\ProgressIndicator;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 #[AsCommand(
-    name: 'openai:commit',
-    description: 'Uses OpenAI API to generate a semantic git commit message based on git diff.'
+    name: 'ai:commit',
+    description: 'Uses AI to generate git commit message based on diff.'
 )]
-class OpenAICommitCommand extends Command
+class AICommitCommand extends Command
 {
     private SymfonyStyle $io;
     public function __construct()
@@ -48,7 +40,7 @@ class OpenAICommitCommand extends Command
 
         if ($input->getOption('reset')) {
             $this->io->note("Reseting env variable:".OpenAIService::OPENAI_API_KEY);
-            EnvironmentHelper::removeEnvVar(    
+            EnvironmentHelper::removeEnvVar(
                 OpenAIService::OPENAI_API_KEY,
             );
             $this->io->success("Env variable removed");
@@ -80,7 +72,7 @@ class OpenAICommitCommand extends Command
             $prompt,
             [
                 'model' => $input->getOption('model'),
-                'max_tokens' => (int)$input->getOption('max-tokens')
+                'max_tokens' => (int)$input->getOption('max-tokens'),
             ]
         );
 
@@ -95,8 +87,8 @@ class OpenAICommitCommand extends Command
     }
 
     /**
-     * Summary of processResponse
-     * @param array<string, mixed> $data
+     * Summary of processResponse.
+     * @param  array<string, mixed> $data
      * @return void
      */
     private function processResponse(array $data): void
@@ -122,9 +114,9 @@ class OpenAICommitCommand extends Command
     }
 
     /**
-     * Clean the message by removing unwanted characters
+     * Clean the message by removing unwanted characters.
      *
-     * @param string $message The message to clean
+     * @param  string $message The message to clean
      * @return string The cleaned message
      */
     private function cleanMessage(string $message): string

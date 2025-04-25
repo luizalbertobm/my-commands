@@ -2,6 +2,8 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
+use MyCommands\Command\AIAskCommand;
+use MyCommands\Command\AICommitCommand;
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
 use MyCommands\Command\OpenAIAskCommand;
@@ -11,8 +13,8 @@ $app = new Application('My Commands', '1.0.0');
 
 $commands = [
     HelloCommand::class,
-    OpenAIAskCommand::class,
-    OpenAICommitCommand::class,
+    AIAskCommand::class,
+    AICommitCommand::class,
 ];
 
 foreach ($commands as $command) {

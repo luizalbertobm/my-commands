@@ -9,7 +9,7 @@ class EnvironmentHelper
     /**
      * Get an environment variable from the system or server.
      * This method checks both the environment variables and the server variables.
-     * @param string $envVarName
+     * @param  string      $envVarName
      * @return string|null
      */
     public static function getEnvVar(string $envVarName): ?string
@@ -28,8 +28,8 @@ class EnvironmentHelper
     /**
      * Save an environment variable to the user's shell profile file.
      * This method appends the export command to the shell profile file.
-     * @param string $envVarName
-     * @param string $key
+     * @param  string $envVarName
+     * @param  string $key
      * @return bool
      */
     public static function saveEnvVar(string $envVarName, string $key): bool
@@ -51,8 +51,8 @@ class EnvironmentHelper
 
     /**
      * Check if the environment variable is already in the shell profile file.
-     * @param string $envVarName
-     * @param string $shellFile
+     * @param  string $envVarName
+     * @param  string $shellFile
      * @return bool
      */
     private static function isEnvVarInShellFile(string $envVarName, string $shellFile): bool
@@ -97,7 +97,7 @@ class EnvironmentHelper
     /**
      * Get an environment variable from the shell profile file.
      * This method reads the shell profile file and extracts the value of the specified environment variable.
-     * @param string $envVarName
+     * @param  string      $envVarName
      * @return string|null
      */
     public static function getEnvVarFromShell(string $envVarName): ?string

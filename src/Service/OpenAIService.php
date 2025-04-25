@@ -3,8 +3,6 @@
 namespace MyCommands\Service;
 
 use MyCommands\DTO\OpenAIPayload;
-use MyCommands\DTO\OpenAIRequest;
-use MyCommands\DTO\OpenAIRequestDTO;
 use MyCommands\Message;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Loop;
@@ -33,17 +31,17 @@ class OpenAIService
     }
 
     /**
-     * Summary of processPrompt
-     * @param string $prompt
-     * @param array<string, mixed> $options
+     * Summary of processPrompt.
+     * @param  string               $prompt
+     * @param  array<string, mixed> $options
      * @return array<string, mixed> The OpenAI API response data
      */
     public function processPrompt(string $prompt, array $options = []): array
     {
         $payload = new OpenAIPayload(
             prompt: $prompt,
-            model: $options['model'] ?? $this->model,
-            maxTokens: $options['max_tokens'] ?? $this->maxTokens,
+            model: $options['model']             ?? $this->model,
+            maxTokens: $options['max_tokens']    ?? $this->maxTokens,
             temperature: $options['temperature'] ?? 0.7
         );
 
@@ -51,11 +49,11 @@ class OpenAIService
     }
 
     /**
-     * Sends a request to the OpenAI API
+     * Sends a request to the OpenAI API.
      *
-     * @param array<string, mixed> $payload The OpenAI API request payload
+     * @param  array<string, mixed> $payload The OpenAI API request payload
      * @return array<string, mixed> The OpenAI API response
-     * @throws \RuntimeException When the request fails or returns an error
+     * @throws \RuntimeException    When the request fails or returns an error
      */
     private function sendRequest(array $payload): array
     {
@@ -109,7 +107,7 @@ class OpenAIService
     }
 
     /**
-     * Renders a table with token usage information
+     * Renders a table with token usage information.
      *
      * @param array<string, mixed> $usage The token usage data
      */
@@ -128,7 +126,7 @@ class OpenAIService
                 ['Temperature', 0.7],
                 ['Prompt Tokens', $usage['prompt_tokens'] ?? 0],
                 ['Completion Tokens', $usage['completion_tokens'] ?? 0],
-                ['Total Tokens', $usage['total_tokens'] ?? 0]
+                ['Total Tokens', $usage['total_tokens'] ?? 0],
             ]);
         $table->render();
     }

@@ -4,11 +4,10 @@
 
 namespace MyCommands\Helper;
 
-use Dom\Comment;
 use MyCommands\Message;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class GitHelper
 {

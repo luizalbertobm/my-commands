@@ -3,29 +3,20 @@
 namespace MyCommands\Command;
 
 use MyCommands\Helper\EnvironmentHelper;
-use MyCommands\Helper\GitHelper;
 use MyCommands\Message;
-use MyCommands\Service\EnvironmentService;
-use MyCommands\Service\GitService;
 use MyCommands\Service\OpenAIService;
-use Psr\Http\Message\ResponseInterface;
-use React\EventLoop\Loop;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Helper\ProgressIndicator;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 
 #[AsCommand(
-    name: 'openai:ask',
-    description: 'Call OpenAI API to respose to a prompt'
+    name: 'ai:ask',
+    description: 'Uses AI to respond to a prompt or question.'
 )]
-class OpenAIAskCommand extends Command
+class AIAskCommand extends Command
 {
     private SymfonyStyle $io;
     public function __construct()
@@ -64,7 +55,7 @@ class OpenAIAskCommand extends Command
             $prompt,
             [
                 'model' => $input->getOption('model'),
-                'max_tokens' => (int)$input->getOption('max-tokens')
+                'max_tokens' => (int)$input->getOption('max-tokens'),
             ]
         );
 
@@ -100,8 +91,8 @@ class OpenAIAskCommand extends Command
     }
 
     /**
-     * Summary of processResponse
-     * @param array<string, mixed> $data
+     * Summary of processResponse.
+     * @param  array<string, mixed> $data
      * @return void
      */
     private function processResponse(array $data): void
