@@ -64,4 +64,24 @@ class GitHelper
 
         return Message::COMMIT_PROMPT->value . "\n" . $diff;
     }
+
+    public static function stashChanges(?string $comment = null): void
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
+
+        $cmd = ['git', 'stash', 'push'];
+        if ($comment) {
+            $cmd[] = '-m';
+            $cmd[] = $comment;
+        }
+
+        $process = new Process($cmd);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+    }
 }

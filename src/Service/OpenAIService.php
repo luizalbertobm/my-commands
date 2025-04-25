@@ -40,8 +40,8 @@ class OpenAIService
     {
         $payload = new OpenAIPayload(
             prompt: $prompt,
-            model: $options['model']             ?? $this->model,
-            maxTokens: $options['max_tokens']    ?? $this->maxTokens,
+            model: $options['model'] ?? $this->model,
+            maxTokens: $options['max_tokens'] ?? $this->maxTokens,
             temperature: $options['temperature'] ?? 0.7
         );
 

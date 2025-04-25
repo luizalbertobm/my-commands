@@ -7,12 +7,7 @@ return (new PhpCsFixer\Config())
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'array_syntax' => ['syntax' => 'short'],
         'binary_operator_spaces' => [
-            'default' => 'align_single_space_minimal',
-            'operators' => [
-                '=' => null,
-                '=>' => null,
-                '??=' => null,
-            ],
+            'default' => 'single_space',
         ],
         'blank_line_after_opening_tag' => true,
         'visibility_required' => ['elements' => ['method', 'property']],
