@@ -66,22 +66,64 @@ class GitHelper
     }
 
     public static function stashChanges(?string $comment = null): void
+{
+    if (!self::isGitAvailable()) {
+        throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+    }
+
+    $cmd = ['git', 'stash', 'push'];
+    if ($comment) {
+        $cmd[] = '-m';
+        $cmd[] = $comment;
+    }
+
+    $process = new Process($cmd);
+    $process->run();
+
+    if (!$process->isSuccessful()) {
+        throw new ProcessFailedException($process);
+    }
+}
+
+    public static function applyStash(int $index): void
     {
         if (!self::isGitAvailable()) {
             throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
         }
 
-        $cmd = ['git', 'stash', 'push'];
-        if ($comment) {
-            $cmd[] = '-m';
-            $cmd[] = $comment;
-        }
-
-        $process = new Process($cmd);
+        $process = new Process(['git', 'stash', 'apply', "stash@{{$index}}"]);
         $process->run();
 
         if (!$process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
+    }
+    public static function dropStash(int $index): void
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
+
+        $process = new Process(['git', 'stash', 'drop', "stash@{$index}"]);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+    }
+    public static function listStashes(): array
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
+
+        $process = new Process(['git', 'stash', 'list']);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        return explode("\n", trim($process->getOutput()));
     }
 }

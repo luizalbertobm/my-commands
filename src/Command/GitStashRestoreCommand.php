@@ -49,9 +49,9 @@ class GitStashRestoreCommand extends Command
         }
 
         // Apply the selected stash
-        $selectedStash = sprintf('stash@{%d}', $selectedIndex);
+        $selectedStash = $stashes[$selectedIndex];
         try {
-            GitHelper::applyStash($selectedStash);
+            GitHelper::applyStash((int)$selectedStash);
         } catch (\Exception $e) {
             $io->error('Failed to apply stash: ' . $e->getMessage());
             return Command::FAILURE;
