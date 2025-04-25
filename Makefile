@@ -8,7 +8,7 @@ DISABLE_XDEBUG_SAPIS = cli fpm apache2
 # --------------------------------------------------
 .PHONY: help
 help: ## Show this help message
-	@echo "Available targets:"; \
+	@echo "Available Make targets:"; \
 	grep -E '^[a-zA-Z0-9_-]+:.*##' $(MAKEFILE_LIST) \
 	  | sed 's/:.*##/ :/' \
 	  | awk -F ' : ' '{ printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }'

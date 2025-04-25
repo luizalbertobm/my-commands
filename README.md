@@ -38,7 +38,7 @@ Before installing and running the project, ensure you have the following:
 
 4. Create a symbolic link to make the commands globally accessible:
    ```bash
-   ln -s $(pwd)/bin/console /usr/local/bin/mycommands
+   sudo ln -s $(pwd)/bin/console /usr/local/bin/mycommands
    ```
 
 5. Verify the installation:

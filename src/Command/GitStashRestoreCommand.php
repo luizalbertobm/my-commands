@@ -32,8 +32,7 @@ class GitStashRestoreCommand extends Command
         foreach ($lastStashes as $index => $stash) {
             $io->writeln(sprintf('[%d] %s', $index, $stash));
         }
-        $io->writeln('Note: The stash list may be truncated for display purposes.');
-        $io->writeln('You can use the stash index to apply a specific stash.');
+        $io->note('The stash list may be truncated for display purposes.');
 
         // Ask the user to select a stash
         $selectedIndex = $io->ask('Enter the number of the stash to apply', null, function ($value) use ($stashes) {
