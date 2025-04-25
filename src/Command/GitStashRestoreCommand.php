@@ -19,8 +19,6 @@ class GitStashRestoreCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->title('Git Apply Stash Command');
-
         // Get the stashes
         $stashes = GitHelper::listStashes();
         if (empty($stashes)) {
@@ -28,9 +26,10 @@ class GitStashRestoreCommand extends Command
             return Command::SUCCESS;
         }
 
-        // Display the last 3 stashes
-        $io->section('Last 3 Stashes');
-        foreach ($stashes as $index => $stash) {
+        // Display the last 5 stashes
+        $io->section('Last 5 Stashes');
+        $lastStashes = array_slice($stashes, 0, 5); // Limit to the first 5 items
+        foreach ($lastStashes as $index => $stash) {
             $io->writeln(sprintf('[%d] %s', $index, $stash));
         }
         $io->writeln('Note: The stash list may be truncated for display purposes.');

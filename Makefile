@@ -1,32 +1,70 @@
 PHP := php
+PHP_INI := $(shell $(PHP) --ini | grep "Loaded Configuration File" | awk '{print $$4}')
+PHP_VERSION ?= $(shell php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+DISABLE_XDEBUG_SAPIS = cli fpm apache2
 
-phpstan:
+# --------------------------------------------------
+# Helper: lista automaticamente todos os alvos com descrição
+# --------------------------------------------------
+.PHONY: help
+help: ## Show this help message
+	@echo "Available targets:"; \
+	grep -E '^[a-zA-Z0-9_-]+:.*##' $(MAKEFILE_LIST) \
+	  | sed 's/:.*##/ :/' \
+	  | awk -F ' : ' '{ printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }'
+
+
+# --------------------------------------------------
+# Targets
+# --------------------------------------------------
+phpstan: ## Perform static analysis with PHPStan
 	$(PHP) vendor/bin/phpstan analyse src --level 8
 
-fixer:
-	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src 
+fixer: ## Fix code style with PHP CS Fixer
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
 
-check: fixer phpstan
+check: ## Run all checks 
+	$(MAKE) phpstan
+	$(MAKE) fixer
 
-test:
+test: ## Run all tests
 	$(PHP) vendor/bin/phpunit --testdox
-test-coverage:
+	
+test-coverage: ## Run tests with code coverage
 	$(PHP) vendor/bin/phpunit --testdox --coverage-html coverage
-	@echo "Open coverage/index.html in your browser to view the coverage report."
-	@echo "You can also use the following command to open it in your default browser:"
-	@echo "open coverage/index.html"
-	@echo "or"
-	@echo "xdg-open coverage/index.html"
-	@echo "or"
-	@echo "start coverage/index.html"
-	@echo "depending on your operating system."
+	# write the command to open the coverage report depending on the OS:
+	@echo "Opening coverage report…"
+	@if [ "$$(uname)" = "Linux" ]; then \
+	  xdg-open coverage/index.html; \
+	elif [ "$$(uname)" = "Darwin" ]; then \
+	  open coverage/index.html; \
+	elif [ "$$(uname)" = "Windows_NT" ]; then \
+	  start coverage/index.html; \
+	else \
+	  echo "Unknown OS, please open coverage/index.html manually."; \
+	fi
+	@echo "✅ Coverage report opened."
 
-xdebug.disable:
-	$(PHP) -dxdebug.mode=off -r "echo 'Xdebug disabled successfully.' . PHP_EOL;"
-	@echo "Xdebug is now disabled. You can run your tests without Xdebug."
-	@echo "To enable it again, run 'make xdebug.enable'."
+xdebug.disable:	## Disable Xdebug for all configured SAPIs
+	@echo "Detected PHP version: $(PHP_VERSION)"
+	@for sapi in $(DISABLE_XDEBUG_SAPIS); do \
+	  echo "→ Disabling xdebug for php$(PHP_VERSION)-$$sapi…"; \
+	  sudo phpdismod -v $(PHP_VERSION) -s $$sapi xdebug >/dev/null 2>&1 || \
+	    echo "   (xdebug not enabled for $$sapi or error)"; \
+	done
+	@echo "Restarting services if present…"
+	-@sudo systemctl restart php$(PHP_VERSION)-fpm >/dev/null 2>&1
+	-@sudo systemctl restart apache2          >/dev/null 2>&1
+	@echo "✅ Xdebug has been disabled on all configured SAPIs."
 
-xdebug.enable:
-	$(PHP) -dxdebug.mode=coverage -r "echo 'Xdebug enabled successfully.' . PHP_EOL;"
-	@echo "Xdebug is now enabled. You can run your tests with Xdebug enabled."
-	@echo "To disable it again, run 'make xdebug.disable'."
+xdebug.enable: ## Enable Xdebug for all configured SAPIs
+	@echo "Detected PHP version: $(PHP_VERSION)"
+	@for sapi in $(DISABLE_XDEBUG_SAPIS); do \
+	  echo "→ Enabling xdebug for php$(PHP_VERSION)-$$sapi…"; \
+	  sudo phpenmod -v $(PHP_VERSION) -s $$sapi xdebug >/dev/null 2>&1 || \
+	    echo "   (xdebug not enabled for $$sapi or error)"; \
+	done
+	@echo "Restarting services if present…"
+	-@sudo systemctl restart php$(PHP_VERSION)-fpm >/dev/null 2>&1
+	-@sudo systemctl restart apache2          >/dev/null 2>&1
+	@echo "✅ Xdebug has been enabled on all configured SAPIs."

@@ -111,6 +111,13 @@ class GitHelper
             throw new ProcessFailedException($process);
         }
     }
+
+    /**
+     * List all stashes.
+     *
+     * @return array<string>     An array of stash entries.
+     * @throws \RuntimeException If Git is not available or the command fails.
+     */
     public static function listStashes(): array
     {
         if (!self::isGitAvailable()) {
