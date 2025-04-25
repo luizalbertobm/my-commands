@@ -4,6 +4,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use MyCommands\Command\AIAskCommand;
 use MyCommands\Command\AICommitCommand;
+use MyCommands\Command\GitStashCommand;
+use MyCommands\Command\GitStashRestoreCommand;
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
 use MyCommands\Command\OpenAIAskCommand;
@@ -15,6 +17,8 @@ $commands = [
     HelloCommand::class,
     AIAskCommand::class,
     AICommitCommand::class,
+    GitStashCommand::class,
+    GitStashRestoreCommand::class,
 ];
 
 foreach ($commands as $command) {
