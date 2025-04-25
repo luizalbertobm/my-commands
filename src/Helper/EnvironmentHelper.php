@@ -55,7 +55,7 @@ class EnvironmentHelper
      * @param  string $shellFile
      * @return bool
      */
-    private static function isEnvVarInShellFile(string $envVarName, string $shellFile): bool
+    public static function isEnvVarInShellFile(string $envVarName, string $shellFile): bool
     {
         if (!file_exists($shellFile)) {
             return false;
@@ -74,7 +74,7 @@ class EnvironmentHelper
      * It returns the first one found or null if none are found.
      * @return string|null
      */
-    private static function getShell(): ?string
+    public static function getShell(): ?string
     {
         // Obter o diretório home do usuário atual
         $homeDir = getenv('HOME') ?: (getenv('USERPROFILE') ?: '~');
