@@ -2,6 +2,11 @@
 
 A collection of custom terminal commands designed to automate repetitive tasks and improve productivity.
 
+This project includes commands for generating semantic Git commit messages using OpenAI, sending custom prompts to OpenAI, and more.
+
+## Demo
+![Command Demo](.docs/screen.gif)
+
 ## Prerequisites
 
 Before installing and running the project, ensure you have the following:
