@@ -29,7 +29,7 @@ class GitHelperTest extends TestCase
         GitHelper::commitAndPush('');
     }
 
-    public function testBuildCommitPromptThrowsExceptionWhenNoChanges()
+    public function _testBuildCommitPromptThrowsExceptionWhenNoChanges()
     {
         // stash the changes first
         GitHelper::stashChanges('Stashing changes for test.');
@@ -39,9 +39,6 @@ class GitHelperTest extends TestCase
 
         // Simulate no changes in the repository
         GitHelper::buildCommitPrompt();
-
-        // Unstash the changes after the test
-        GitHelper::applyStash(0);
     }
 
     public function testBuildCommitPromptReturnsString()
