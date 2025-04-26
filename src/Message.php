@@ -8,8 +8,8 @@ enum Message: string
     case API_KEY_NOT_FOUND = 'OpenAI API key not found.';
     case API_KEY_INSTRUCTIONS = 'Create you API key at https://platform.openai.com/api-keys.';
     case API_KEY_CREATE = 'Type your OpenAI API key';
-    case ENTER_PROMPT = 'Please type your request and press Enter';
     case EMPTY_PROMPT = 'Empty prompt received, using default help request.';
+    case ENTER_PROMPT = 'Please type your request and press Enter';
     case DEFAULT_PROMPT = 'What is the brazilian capital?';
     case COMMIT_ERR = 'Failed to generate commit message: %s';
     case NO_CHANGES = 'No changes detected to generate a commit message.';

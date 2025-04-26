@@ -46,9 +46,9 @@ class AIAskCommand extends Command
             600
         );
 
-        $prompt = (string)$input->getArgument('prompt');
+        $prompt = null;
         if (!$prompt) {
-            $prompt = $this->io->ask('Enter prompt', Message::DEFAULT_PROMPT->value);
+            $prompt = $this->io->ask(Message::ENTER_PROMPT->value, Message::DEFAULT_PROMPT->value);
         }
 
         $responseData = $openAIService->processPrompt(
