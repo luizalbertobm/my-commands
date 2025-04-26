@@ -13,3 +13,4 @@
 # OS files
 .DS_Store
 Thumbs.db
+.phpunit.cache/test-results
