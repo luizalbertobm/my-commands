@@ -46,10 +46,7 @@ class AIAskCommand extends Command
             600
         );
 
-        $prompt = null;
-        if (!$prompt) {
-            $prompt = $this->io->ask(Message::ENTER_PROMPT->value, Message::DEFAULT_PROMPT->value);
-        }
+        $prompt = $this->io->ask(Message::ENTER_PROMPT->value, Message::DEFAULT_PROMPT->value);
 
         $responseData = $openAIService->processPrompt(
             $prompt,
@@ -103,5 +100,4 @@ class AIAskCommand extends Command
             $this->io->writeln($message);
         }
     }
-
 }
