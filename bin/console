@@ -5,6 +5,7 @@ require __DIR__ . '/../vendor/autoload.php';
 use MyCommands\Command\AIAskCommand;
 use MyCommands\Command\AICommitCommand;
 use MyCommands\Command\AIResetKeyCommand;
+use MyCommands\Command\GitSoftRevertCommand;
 use MyCommands\Command\GitStashCommand;
 use MyCommands\Command\GitStashRestoreCommand;
 use Symfony\Component\Console\Application;
@@ -21,6 +22,7 @@ $commands = [
     AIResetKeyCommand::class,
     GitStashCommand::class,
     GitStashRestoreCommand::class,
+    GitSoftRevertCommand::class,
 ];
 
 foreach ($commands as $command) {

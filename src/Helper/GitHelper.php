@@ -66,24 +66,24 @@ class GitHelper
     }
 
     public static function stashChanges(?string $comment = null): void
-{
-    if (!self::isGitAvailable()) {
-        throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
-    }
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
 
-    $cmd = ['git', 'stash', 'push'];
-    if ($comment) {
-        $cmd[] = '-m';
-        $cmd[] = $comment;
-    }
+        $cmd = ['git', 'stash', 'push'];
+        if ($comment) {
+            $cmd[] = '-m';
+            $cmd[] = $comment;
+        }
 
-    $process = new Process($cmd);
-    $process->run();
+        $process = new Process($cmd);
+        $process->run();
 
-    if (!$process->isSuccessful()) {
-        throw new ProcessFailedException($process);
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
-}
 
     public static function applyStash(int $index): void
     {
@@ -132,5 +132,18 @@ class GitHelper
         }
 
         return explode("\n", trim($process->getOutput()));
+    }
+    public static function softRevertLastCommit(): void
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
+
+        $process = new Process(['git', 'reset', '--soft', 'HEAD~1']);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
     }
 }
