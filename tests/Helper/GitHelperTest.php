@@ -46,11 +46,14 @@ class GitHelperTest extends TestCase
         // create a file in the project root to simulate changes
         $filePath = __DIR__ . '/test_file.txt';
         file_put_contents($filePath, 'Temporary change');
+        // add the file to git
+        GitHelper::stageChanges($filePath);
 
         $prompt = GitHelper::buildCommitPrompt();
         $this->assertIsString($prompt, 'The commit prompt should be a string.');
 
         // Clean up the file
+        GitHelper::unstageChanges($filePath);
         unlink($filePath);
     }
 }

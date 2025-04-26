@@ -167,4 +167,22 @@ class GitHelper
             throw new ProcessFailedException($process);
         }
     }
+
+    public static function unstageChanges(?string $file = null): void
+    {
+        if (!self::isGitAvailable()) {
+            throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
+        }
+        $cmd = ['git', 'reset'];
+        if ($file) {
+            $cmd[] = $file;
+        } else {
+            $cmd[] = '.';
+        }
+        $process = new Process($cmd);
+        $process->run();
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+    }
 }
