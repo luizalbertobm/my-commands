@@ -48,7 +48,7 @@ class GitHelper
         }
     }
 
-    public static function buildCommitPrompt(): string
+    public static function buildCommitPrompt(?string $lang = 'English'): string
     {
         if (!self::isGitAvailable()) {
             throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
@@ -62,6 +62,10 @@ class GitHelper
             }
         }
 
+        $commitPrompt = Message::COMMIT_PROMPT->value;
+        if ($lang) {
+            $commitPrompt .= " (" . Message::SYSTEM_ROLE->value . " in $lang)";
+        }
         return Message::COMMIT_PROMPT->value . "\n" . $diff;
     }
 

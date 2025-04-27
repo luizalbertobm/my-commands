@@ -4,6 +4,7 @@ namespace MyCommands\Command;
 
 use MyCommands\Helper\EnvironmentHelper;
 use MyCommands\Helper\GitHelper;
+use MyCommands\Language;
 use MyCommands\Message;
 use MyCommands\Service\OpenAIService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -49,6 +50,14 @@ class AICommitCommand extends Command
         }
         $apiKey = $this->getOrSetApiKey();
 
+        $language = $this->io->choice(
+            'In which language do you want to make the commit?',
+            Language::getAllLanguages(),
+            Language::ENGLISH->value,
+        );
+
+        $this->io->note("Selected language: $language");
+
         $openAIService = new OpenAIService(
             $apiKey,
             $output,
@@ -57,7 +66,7 @@ class AICommitCommand extends Command
         );
 
         try {
-            $prompt = GitHelper::buildCommitPrompt();
+            $prompt = GitHelper::buildCommitPrompt($language);
         } catch (\RuntimeException $e) {
             if ($e->getCode() === Command::INVALID) {
                 $this->io->warning($e->getMessage());

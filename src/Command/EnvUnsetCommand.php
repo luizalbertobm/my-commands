@@ -10,40 +10,33 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'env:set',
-    description: 'Set an environment variable in the shell profile file.'
+    name: 'env:unset',
+    description: 'Unset an environment variable from the shell profile file.'
 )]
-class EnvSetCommand extends Command
+class EnvUnsetCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
-        $io->section('Setting an Environment Variable');
+        $io->section('Unsetting an Environment Variable');
 
         // Ask for the environment variable name
-        $envVarName = $io->ask('Enter the name of the environment variable');
+        $envVarName = $io->ask('Enter the name of the environment variable to unset');
         if (!$envVarName) {
             $io->error('Environment variable name cannot be empty.');
             return Command::FAILURE;
         }
 
-        // Ask for the environment variable value
-        $envVarValue = $io->ask('Enter the value of the environment variable');
-        if (!$envVarValue) {
-            $io->error('Environment variable value cannot be empty.');
-            return Command::FAILURE;
-        }
-
-    // get shell profile file
+        // Get shell profile file
         $shell = EnvironmentHelper::getShell();
 
-        // Save the environment variable using EnvironmentHelper
-        if (EnvironmentHelper::saveEnvVar($envVarName, $envVarValue)) {
-            $io->success("The environment variable '$envVarName' has been successfully set.");
+        // Remove the environment variable using EnvironmentHelper
+        if (EnvironmentHelper::removeEnvVar($envVarName)) {
+            $io->success("The environment variable '$envVarName' has been successfully unset.");
             $io->info("Restart your terminal or run `source $shell` (or equivalent) for the changes to take effect.");
         } else {
-            $io->error('Failed to set the environment variable.');
+            $io->error('Failed to unset the environment variable.');
             return Command::FAILURE;
         }
 
