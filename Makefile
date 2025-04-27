@@ -21,14 +21,14 @@ phpstan: ## Perform static analysis with PHPStan
 	$(PHP) vendor/bin/phpstan analyse src --level 8
 
 fixer: ## Fix code style with PHP CS Fixer
-	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix
 
 check: ## Run all checks 
 	$(MAKE) phpstan
 	$(MAKE) fixer
 
 test: ## Run all tests
-	$(PHP) vendor/bin/phpunit --testdox
+	$(PHP) vendor/bin/phpunit --testdox --display-deprecations
 	
 test-coverage: ## Run tests with code coverage
 	$(PHP) vendor/bin/phpunit --testdox --coverage-html coverage

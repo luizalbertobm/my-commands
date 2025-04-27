@@ -1,22 +1,22 @@
 #!/usr/bin/env php
 <?php
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use MyCommands\Command\AIAskCommand;
 use MyCommands\Command\AICommitCommand;
 use MyCommands\Command\AIResetKeyCommand;
+use MyCommands\Command\CurrencyConvertCommand;
+use MyCommands\Command\EnvSetCommand;
+use MyCommands\Command\EnvUnsetCommand;
 use MyCommands\Command\GitSoftRevertCommand;
 use MyCommands\Command\GitStashCommand;
 use MyCommands\Command\GitStashRestoreCommand;
 use Symfony\Component\Console\Application;
-use MyCommands\Command\HelloCommand;
-use MyCommands\Command\EnvSetCommand;
-use MyCommands\Command\EnvUnsetCommand;
 
 $app = new Application('My Commands', '1.0.0');
 
 $commands = [
-    HelloCommand::class,
     AIAskCommand::class,
     AICommitCommand::class,
     AIResetKeyCommand::class,
@@ -25,6 +25,7 @@ $commands = [
     GitSoftRevertCommand::class,
     EnvSetCommand::class,
     EnvUnsetCommand::class,
+    CurrencyConvertCommand::class,
 ];
 
 foreach ($commands as $command) {

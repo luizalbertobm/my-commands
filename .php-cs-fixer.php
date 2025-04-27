@@ -24,5 +24,5 @@ return (new PhpCsFixer\Config())
             ->in(__DIR__ . '/src')
             // add the console file
             ->in(__DIR__ . '/bin')
-            ->name('*.php')
+            ->name('console')
     );

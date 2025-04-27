@@ -36,6 +36,8 @@ class EnvironmentHelper
     {
         $shell = self::getShell();
 
+        putenv("$envVarName=$key");
+
         if ($shell) {
             if (!self::isEnvVarInShellFile($envVarName, $shell)) {
                 file_put_contents($shell, "export $envVarName='$key'\n", FILE_APPEND);
@@ -119,6 +121,7 @@ class EnvironmentHelper
     public static function removeEnvVar(string $envVarName): bool
     {
         $shell = self::getShell();
+        putenv($envVarName);
 
         if ($shell && file_exists($shell)) {
             $content = file_get_contents($shell);
