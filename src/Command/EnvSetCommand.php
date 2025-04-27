@@ -21,24 +21,20 @@ class EnvSetCommand extends Command
 
         $io->section('Setting an Environment Variable');
 
-        // Ask for the environment variable name
         $envVarName = $io->ask('Enter the name of the environment variable');
         if (!$envVarName) {
             $io->error('Environment variable name cannot be empty.');
             return Command::FAILURE;
         }
 
-        // Ask for the environment variable value
         $envVarValue = $io->ask('Enter the value of the environment variable');
         if (!$envVarValue) {
             $io->error('Environment variable value cannot be empty.');
             return Command::FAILURE;
         }
 
-    // get shell profile file
         $shell = EnvironmentHelper::getShell();
 
-        // Save the environment variable using EnvironmentHelper
         if (EnvironmentHelper::saveEnvVar($envVarName, $envVarValue)) {
             $io->success("The environment variable '$envVarName' with value '$envVarValue' has been successfully set.");
             $io->info("Restart your terminal or run `source $shell` (or equivalent) for the changes to take effect.");
