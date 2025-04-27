@@ -18,13 +18,15 @@ class AIResetKeyCommand extends Command
 {
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // get the shell profile file
+        $shell = EnvironmentHelper::getShell();
         $io = new SymfonyStyle($input, $output);
 
         $io->section('Resetting OpenAI API Key');
 
         if (EnvironmentHelper::removeEnvVar(OpenAIService::OPENAI_API_KEY)) {
             $io->success('The OpenAI API key has been successfully reset.');
-            $io->info('Reload your shell or restart your terminal for the changes to take effect.');
+            $io->info('Reload your shell or run `source ' . $shell . '` (or equivalent) for the changes to take effect.'); 
         } else {
             $io->error('Failed to reset the OpenAI API key. It may not have been set.');
         }

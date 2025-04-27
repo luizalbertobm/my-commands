@@ -31,3 +31,13 @@ else
     echo "Installation failed. Please check for errors."
     exit 1
 fi
+
+# Enable autocomplete for Symfony Console commands
+if [ -f "$(pwd)/symfony-autocomplete.bash" ]; then
+    echo "Enabling autocomplete for My Commands..."
+    echo "source $(pwd)/symfony-autocomplete.bash" >> ~/.bashrc
+    source ~/.bashrc
+    echo "Autocomplete enabled. Restart your terminal or run 'source ~/.bashrc' to apply changes."
+else
+    echo "Autocomplete script not found. Skipping autocomplete setup."
+fi
