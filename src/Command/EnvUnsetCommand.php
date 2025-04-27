@@ -34,7 +34,9 @@ class EnvUnsetCommand extends Command
         // Remove the environment variable using EnvironmentHelper
         if (EnvironmentHelper::removeEnvVar($envVarName)) {
             $io->success("The environment variable '$envVarName' has been successfully unset.");
-            $io->info("Restart your terminal or run `source $shell` (or equivalent) for the changes to take effect.");
+            $io->info([
+                "Run `unset $envVarName` in your terminal to remove it from the current session."
+            ]);
         } else {
             $io->error('Failed to unset the environment variable.');
             return Command::FAILURE;
