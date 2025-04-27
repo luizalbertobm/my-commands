@@ -41,8 +41,6 @@ class EnvironmentHelper
                 file_put_contents($shell, "export $envVarName='$key'\n", FILE_APPEND);
             }
 
-            putenv("$envVarName=$key");
-            $_SERVER[$envVarName] = $key;
             return true;
         }
 
@@ -113,18 +111,26 @@ class EnvironmentHelper
         return null;
     }
 
+    /**
+     * Remove an environment variable from the user's shell profile file and the PHP environment.
+     * @param  string $envVarName
+     * @return bool
+     */
     public static function removeEnvVar(string $envVarName): bool
     {
         $shell = self::getShell();
+
         if ($shell && file_exists($shell)) {
             $content = file_get_contents($shell);
             if ($content !== false) {
-                $newContent = preg_replace("/export $envVarName='[^']+'\n/", '', $content);
-                file_put_contents($shell, $newContent);
-                unset($_SERVER[$envVarName]);
-                return true;
+                // Remove the line containing the environment variable
+                $updatedContent = preg_replace("/^export $envVarName='[^']*'\\n?/m", '', $content);
+                if ($updatedContent !== null) {
+                    file_put_contents($shell, $updatedContent);
+                }
             }
         }
-        return false;
+
+        return true;
     }
 }
