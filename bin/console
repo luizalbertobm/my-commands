@@ -10,8 +10,7 @@ use MyCommands\Command\GitStashCommand;
 use MyCommands\Command\GitStashRestoreCommand;
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
-use MyCommands\Command\OpenAIAskCommand;
-use MyCommands\Command\OpenAICommitCommand;
+use MyCommands\Command\EnvSetCommand;
 
 $app = new Application('My Commands', '1.0.0');
 
@@ -23,6 +22,7 @@ $commands = [
     GitStashCommand::class,
     GitStashRestoreCommand::class,
     GitSoftRevertCommand::class,
+    EnvSetCommand::class,
 ];
 
 foreach ($commands as $command) {
