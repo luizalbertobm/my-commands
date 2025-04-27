@@ -14,15 +14,12 @@ then
     exit 1
 fi
 
-# Install dependencies
 echo "Installing dependencies..."
 composer install
 
-# Create a symbolic link
 echo "Creating a symbolic link..."
 sudo ln -sf $(pwd)/bin/console /usr/local/bin/my
 
-# Verify installation
 echo "Verifying installation..."
 if mycommands list &> /dev/null
 then
@@ -30,14 +27,4 @@ then
 else
     echo "Installation failed. Please check for errors."
     exit 1
-fi
-
-# Enable autocomplete for Symfony Console commands
-if [ -f "$(pwd)/symfony-autocomplete.bash" ]; then
-    echo "Enabling autocomplete for My Commands..."
-    echo "source $(pwd)/symfony-autocomplete.bash" >> ~/.bashrc
-    source ~/.bashrc
-    echo "Autocomplete enabled. Restart your terminal or run 'source ~/.bashrc' to apply changes."
-else
-    echo "Autocomplete script not found. Skipping autocomplete setup."
 fi

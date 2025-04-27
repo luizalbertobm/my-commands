@@ -11,6 +11,7 @@ use MyCommands\Command\GitStashRestoreCommand;
 use Symfony\Component\Console\Application;
 use MyCommands\Command\HelloCommand;
 use MyCommands\Command\EnvSetCommand;
+use MyCommands\Command\EnvUnsetCommand;
 
 $app = new Application('My Commands', '1.0.0');
 
@@ -23,6 +24,7 @@ $commands = [
     GitStashRestoreCommand::class,
     GitSoftRevertCommand::class,
     EnvSetCommand::class,
+    EnvUnsetCommand::class,
 ];
 
 foreach ($commands as $command) {

@@ -40,7 +40,7 @@ class EnvSetCommand extends Command
 
         // Save the environment variable using EnvironmentHelper
         if (EnvironmentHelper::saveEnvVar($envVarName, $envVarValue)) {
-            $io->success("The environment variable '$envVarName' has been successfully set.");
+            $io->success("The environment variable '$envVarName' with value '$envVarValue' has been successfully set.");
             $io->info("Restart your terminal or run `source $shell` (or equivalent) for the changes to take effect.");
         } else {
             $io->error('Failed to set the environment variable.');

@@ -63,9 +63,6 @@ class GitHelper
         }
 
         $commitPrompt = Message::COMMIT_PROMPT->value;
-        if ($lang) {
-            $commitPrompt .= " (" . Message::SYSTEM_ROLE->value . " in $lang)";
-        }
         return Message::COMMIT_PROMPT->value . "\n" . $diff;
     }
 

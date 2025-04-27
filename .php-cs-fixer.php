@@ -20,5 +20,9 @@ return (new PhpCsFixer\Config())
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
-            ->in(__DIR__ . '/src') // Diretório onde o código está localizado
+            ->in(__DIR__ . '/tests')
+            ->in(__DIR__ . '/src')
+            // add the console file
+            ->in(__DIR__ . '/bin')
+            ->name('*.php')
     );
