@@ -55,18 +55,42 @@ Before installing and running the project, ensure you have the following:
 
 Run the following command to see the available commands:
 ```bash
-mycommands list
+my list
 ```
 
 ### Example: Generate a Semantic Commit Message
 ```bash
-mycommands openai:commit
+my ai:commit
 ```
 
 ### Example: Send a Custom Prompt to OpenAI
 ```bash
-mycommands openai:ask "Write a poem about technology."
+my ai:ask "Write a poem about technology."
 ```
+
+
+## Shell Completion
+
+The shell completion is automatically activated when you run the `./install.sh` script.
+The `my-autocomplete.sh` contains the necessary functions to enable auto-completion for the commands.
+
+### Updating the Completion File
+
+If you create new commands or modify existing ones, you can regenerate the completion file by running:
+
+1. Generate the completion file:
+
+```bash
+my completion > my-autocomplete.sh
+```
+
+2. Reload your shell configuration:
+```bash
+source ~/.bashrc # or source ~/.zshrc
+```
+
+Now, you should have auto-completion enabled. Simply type `my` followed by a tab to see the available commands.
+
 
 ## Development
 
@@ -83,6 +107,7 @@ mycommands openai:ask "Write a poem about technology."
 ### Adding New Commands
 1. Create a new command class in the `src/Command` directory.
 2. Register the command in `bin/console`.
+
 
 ## Contributing
 
