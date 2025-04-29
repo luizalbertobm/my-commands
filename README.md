@@ -78,13 +78,13 @@ The `my-autocomplete.sh` contains the necessary functions to enable auto-complet
 
 If you create new commands or modify existing ones, you can regenerate the completion file by running:
 
-1. Generate the completion file:
+1. Regenerate the completion file:
 
 ```bash
 my completion > my-autocomplete.sh
 ```
 
-2. Reload your shell configuration:
+Reload your shell configuration file to apply the changes:
 ```bash
 source ~/.bashrc # or source ~/.zshrc
 ```

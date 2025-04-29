@@ -26,11 +26,7 @@ enum Message: string
     case COMMIT_SUCCESS = 'Changes staged, committed, and pushed successfully.';
     case GIT_CMD_ERROR = 'Failed to run git command: %s';
     case ACTION_CANCELED = 'Action canceled by user.';
-    case COMMIT_PROMPT = 'Write only the plain text from a concise semantic conventional commit message based on the following diff 
-        (The commit message should be structured as follows:
-        <type>[optional scope]: <description>
-
-        [optional body]):';
+    case COMMIT_PROMPT = 'using {language} language, write a plain text for a concise semantic conventional commit based on the following diff:';
     case API_REQUEST_FAILED = 'API request failed: %s';
 
     /**

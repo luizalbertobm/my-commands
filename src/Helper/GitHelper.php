@@ -63,7 +63,10 @@ class GitHelper
         }
 
         $commitPrompt = Message::COMMIT_PROMPT->value;
-        return Message::COMMIT_PROMPT->value . "\n" . $diff;
+        if ($lang) {
+            $commitPrompt = str_replace('{language}', $lang, $commitPrompt);
+        }
+        return $commitPrompt . "\n" . $diff;
     }
 
     public static function stashChanges(?string $comment = null): void
