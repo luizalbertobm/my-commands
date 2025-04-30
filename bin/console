@@ -3,6 +3,8 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use MyCommands\Command\DockerListCommand;
+use MyCommands\Command\DockerStopAllCommand;
 use MyCommands\Command\AIAskCommand;
 use MyCommands\Command\AICommitCommand;
 use MyCommands\Command\AIResetKeyCommand;
@@ -12,11 +14,13 @@ use MyCommands\Command\EnvUnsetCommand;
 use MyCommands\Command\GitSoftRevertCommand;
 use MyCommands\Command\GitStashCommand;
 use MyCommands\Command\GitStashRestoreCommand;
+use MyCommands\Command\ZipAllCommand;
 use Symfony\Component\Console\Application;
 
 $app = new Application('My Commands', '1.0.0');
 
 $commands = [
+    ZipAllCommand::class,
     AIAskCommand::class,
     AICommitCommand::class,
     AIResetKeyCommand::class,
@@ -26,6 +30,8 @@ $commands = [
     EnvSetCommand::class,
     EnvUnsetCommand::class,
     CurrencyConvertCommand::class,
+    DockerStopAllCommand::class,
+    DockerListCommand::class,
 ];
 
 foreach ($commands as $command) {
