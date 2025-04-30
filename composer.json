@@ -3,6 +3,8 @@
     "description": "A bunch of useful terminal commands",
     "type": "library",
     "require": {
+        "php": "^8.3",
+        "ext-xml": "*",
         "symfony/console": "^7.2",
         "symfony/process": "^7.2",
         "symfony/http-client": "^7.2",
