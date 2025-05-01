@@ -5,6 +5,7 @@
     "require": {
         "php": "^8.3",
         "ext-xml": "*",
+        "ext-mbstring": "*",
         "symfony/console": "^7.2",
         "symfony/process": "^7.2",
         "symfony/http-client": "^7.2",

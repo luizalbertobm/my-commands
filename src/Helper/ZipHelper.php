@@ -1,4 +1,5 @@
 <?php
+
 namespace MyCommands\Helper;
 
 use ZipArchive;
@@ -8,8 +9,8 @@ class ZipHelper
     /**
      * Compresses a directory into a zip file.
      *
-     * @param string $sourceDir Path to the directory to zip
-     * @param string $zipPath   Path where the zip file will be created
+     * @param  string            $sourceDir Path to the directory to zip
+     * @param  string            $zipPath   Path where the zip file will be created
      * @throws \RuntimeException If zip creation fails
      */
     public function zipDirectory(string $sourceDir, string $zipPath): void

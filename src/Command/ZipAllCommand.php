@@ -1,13 +1,13 @@
 <?php
+
 namespace MyCommands\Command;
 
+use MyCommands\Helper\ZipHelper;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Attribute\AsCommand;
-use ZipArchive;
-use MyCommands\Helper\ZipHelper;
 
 #[AsCommand(name: 'zip:all', description: 'Compresses all files in the current directory where the command is executed')]
 class ZipAllCommand extends Command
