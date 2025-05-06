@@ -12,7 +12,7 @@ class CurrencyConvertCommandTest extends TestCase
 {
     public function testSuccessfulConversion(): void
     {
-        $mockResponse = new MockResponse(json_encode(['USD' => ['EUR' => 0.85]]));
+        $mockResponse = new MockResponse(json_encode(['usd' => ['eur' => 0.85]]));
         $mockClient = new MockHttpClient($mockResponse);
 
         $command = new CurrencyConvertCommand();
