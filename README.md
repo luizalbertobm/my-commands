@@ -26,29 +26,57 @@ Before installing and running the project, ensure you have the following:
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/luizalbertobm/my-commands.git
-   ```
+You can install My Commands in two ways:
 
-2. Navigate to the project directory:
-   ```bash
-   cd my-commands
-   ```
+### Option 1: Using the Installation Script (Recommended)
 
-3. Install dependencies using Composer:
+Run the installation script that will automatically handle all the setup for you:
+```bash
+./install.sh
+```
+
+After running the script, you have to reload your shell configuration file to apply the changes.
+```bash
+source ~/.bashrc # or source ~/.zshrc
+```
+
+The script will:
+- Check if PHP and Composer are installed
+- Install dependencies
+- Create a symbolic link to make the command globally accessible
+- Configure shell autocompletion
+
+### Option 2: Manual Installation
+
+If you prefer to install step by step:
+
+
+1. Install dependencies using Composer:
    ```bash
    composer install
    ```
 
-4. Create a symbolic link to make the commands globally accessible:
+2. Create a symbolic link to make the commands globally accessible:
    ```bash
    sudo ln -s $(pwd)/bin/console /usr/local/bin/my
    ```
 
+3. Add shell autocompletion to your configuration file:
+   ```bash
+   # For Bash
+   echo "source $(pwd)/my-autocomplete.sh" >> ~/.bashrc
+   # OR for Zsh
+   echo "source $(pwd)/my-autocomplete.sh" >> ~/.zshrc
+   ```
+
+4. Reload your shell configuration:
+   ```bash
+   source ~/.bashrc # or source ~/.zshrc
+   ```
+
 5. Verify the installation:
    ```bash
-   mycommands list
+   my list
    ```
 
 ## Usage
