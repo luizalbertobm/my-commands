@@ -5,6 +5,8 @@
 .php-cs-fixer.cache
 /.env
 /.env.local
+/.phpunit.cache
+/coverage-report
 
 # IDE files
 /.idea/

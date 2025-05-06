@@ -31,17 +31,16 @@ test: ## Run all tests
 	$(PHP) vendor/bin/phpunit --testdox --display-deprecations
 	
 test-coverage: ## Run tests with code coverage
-	$(PHP) vendor/bin/phpunit --testdox --coverage-html coverage
-	# write the command to open the coverage report depending on the OS:
+	XDEBUG_MODE=coverage $(PHP) vendor/bin/phpunit --testdox --coverage-html coverage-report
 	@echo "Opening coverage report…"
 	@if [ "$$(uname)" = "Linux" ]; then \
-	  xdg-open coverage/index.html; \
+	  xdg-open coverage-report/index.html; \
 	elif [ "$$(uname)" = "Darwin" ]; then \
-	  open coverage/index.html; \
+	  open coverage-report/index.html; \
 	elif [ "$$(uname)" = "Windows_NT" ]; then \
-	  start coverage/index.html; \
+	  start coverage-report/index.html; \
 	else \
-	  echo "Unknown OS, please open coverage/index.html manually."; \
+	  echo "Unknown OS, please open coverage-report/index.html manually."; \
 	fi
 	@echo "✅ Coverage report opened."
 

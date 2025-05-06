@@ -12,7 +12,7 @@ class CurrencyConvertCommandTest extends TestCase
 {
     public function testSuccessfulConversion(): void
     {
-        $mockResponse = new MockResponse(json_encode(['eur' => 0.85]));
+        $mockResponse = new MockResponse(json_encode(['USD' => ['EUR' => 0.85]]));
         $mockClient = new MockHttpClient($mockResponse);
 
         $command = new CurrencyConvertCommand();
@@ -21,8 +21,8 @@ class CurrencyConvertCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             '--amount' => 100,
-            '--from' => 'usd',
-            '--to' => 'eur',
+            '--from' => 'USD',
+            '--to' => 'EUR',
         ]);
 
         $output = $commandTester->getDisplay();
@@ -31,18 +31,24 @@ class CurrencyConvertCommandTest extends TestCase
 
     public function testMissingOptions(): void
     {
+        // Mockamos a interação do usuário usando setInputs
         $command = new CurrencyConvertCommand();
         $commandTester = new CommandTester($command);
 
+        // Simulamos as respostas interativas para amount, from e to
+        $commandTester->setInputs(['100', 'USD', 'EUR']);
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('All options (amount, from, to) are required.', $output);
+        $this->assertStringContainsString('Enter the amount to convert', $output);
+        $this->assertStringContainsString('Enter the source currency', $output);
+        $this->assertStringContainsString('Enter the target currency', $output);
     }
 
     public function testInvalidTargetCurrency(): void
     {
-        $mockResponse = new MockResponse(json_encode(['eur' => 0.85]));
+        // Mockamos uma resposta onde a moeda alvo não está presente
+        $mockResponse = new MockResponse(json_encode(['usd' => ['eur' => 0.85]]));
         $mockClient = new MockHttpClient($mockResponse);
 
         $command = new CurrencyConvertCommand();
@@ -51,8 +57,8 @@ class CurrencyConvertCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute([
             '--amount' => 100,
-            '--from' => 'usd',
-            '--to' => 'invalid',
+            '--from' => 'USD',
+            '--to' => 'INVALID', // Uma moeda que não está na resposta
         ]);
 
         $output = $commandTester->getDisplay();
