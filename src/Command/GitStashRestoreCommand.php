@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'git:stash-restore',
-    description: 'Apply a specific stash after showing the last 3 stashes.'
+    description: 'Apply a specific stash after showing the last 5 stashes.'
 )]
 class GitStashRestoreCommand extends Command
 {
@@ -26,36 +26,33 @@ class GitStashRestoreCommand extends Command
             return Command::SUCCESS;
         }
 
-        // Display the last 5 stashes
-        $io->section('Last 5 Stashes');
-        $lastStashes = array_slice($stashes, 0, 5); // Limit to the first 5 items
+        // Prepare stash options for choice menu (limited to 5)
+        $lastStashes = array_slice($stashes, 0, 5);
+        $stashOptions = [];
         foreach ($lastStashes as $index => $stash) {
-            $io->writeln(sprintf('[%d] %s', $index, $stash));
+            $stashOptions[$index] = sprintf('%s', $stash);
         }
-        $io->note('The stash list may be truncated for display purposes.');
-
-        // Ask the user to select a stash
-        $selectedIndex = $io->ask('Enter the number of the stash to apply', null, function ($value) use ($stashes) {
-            if (!is_numeric($value) || !isset($stashes[(int)$value])) {
-                throw new \RuntimeException('Invalid selection. Please enter a valid stash number.');
-            }
-            return (int)$value;
-        });
-        if (!isset($stashes[$selectedIndex])) {
-            $io->error('Invalid stash selection.');
-            return Command::FAILURE;
+        
+        if (count($stashes) > 5) {
+            $io->note('Showing only the last 5 stashes. There are ' . count($stashes) . ' stashes in total.');
         }
 
+        // Use the choice method to let the user select a stash
+        $selectedOption = $io->choice('Select a stash to apply', $stashOptions);
+        
+        // Extract the index from the selected option
+        preg_match('/^\[(\d+)\]/', $selectedOption, $matches);
+        $selectedIndex = (int)$matches[1];
+        
         // Apply the selected stash
-        $selectedStash = $stashes[$selectedIndex];
         try {
-            GitHelper::applyStash((int)$selectedStash);
+            GitHelper::applyStash($selectedIndex);
         } catch (\Exception $e) {
             $io->error('Failed to apply stash: ' . $e->getMessage());
             return Command::FAILURE;
         }
 
-        $io->success(sprintf('Successfully applied stash: %s', $selectedStash));
+        $io->success(sprintf('Successfully applied stash: %s', $stashes[$selectedIndex]));
 
         return Command::SUCCESS;
     }
