@@ -45,7 +45,7 @@ fi
 
 
 echo "Verifying installation..."
-if mycommands list &> /dev/null
+if my list &> /dev/null
 then
     echo "Installation successful! Use 'my list' to see available commands."
 else

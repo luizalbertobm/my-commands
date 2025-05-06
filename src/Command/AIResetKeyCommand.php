@@ -26,7 +26,25 @@ class AIResetKeyCommand extends Command
 
         if (EnvironmentHelper::removeEnvVar(OpenAIService::OPENAI_API_KEY)) {
             $io->success('The OpenAI API key has been successfully reset.');
-            $io->info('Reload your shell or run `source ' . $shell . '` (or equivalent) for the changes to take effect.');
+
+            // Perguntar ao usuário se deseja configurar uma nova chave
+            if ($io->confirm('Do you want to set a new OpenAI API key now?', false)) {
+                $newApiKey = $io->ask('Enter your OpenAI API key');
+
+                if ($newApiKey) {
+                    if (EnvironmentHelper::saveEnvVar(OpenAIService::OPENAI_API_KEY, $newApiKey)) {
+                        $io->success('The new OpenAI API key has been successfully set.');
+                    } else {
+                        $io->error('Failed to set the new OpenAI API key.');
+                    }
+                } else {
+                    $io->warning('No API key provided. The key remains unset.');
+                }
+            }
+
+            // Use o método writeln com tags estilizadas para colorir o comando fonte
+            $sourceCommand = "<fg=cyan>source {$shell}</>";
+            $io->writeln("Reload your shell or run `{$sourceCommand}` (or equivalent) for the changes to take effect.");
         } else {
             $io->error('Failed to reset the OpenAI API key. It may not have been set.');
         }
