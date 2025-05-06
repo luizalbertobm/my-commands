@@ -9,8 +9,6 @@ class EnvironmentHelper
     /**
      * Get an environment variable from the system or server.
      * This method checks both the environment variables and the server variables.
-     * @param  string      $envVarName
-     * @return string|null
      */
     public static function getEnvVar(string $envVarName): ?string
     {
@@ -28,9 +26,6 @@ class EnvironmentHelper
     /**
      * Save an environment variable to the user's shell profile file.
      * This method appends the export command to the shell profile file.
-     * @param  string $envVarName
-     * @param  string $key
-     * @return bool
      */
     public static function saveEnvVar(string $envVarName, string $key): bool
     {
@@ -51,9 +46,6 @@ class EnvironmentHelper
 
     /**
      * Check if the environment variable is already in the shell profile file.
-     * @param  string $envVarName
-     * @param  string $shellFile
-     * @return bool
      */
     public static function isEnvVarInShellFile(string $envVarName, string $shellFile): bool
     {
@@ -62,17 +54,17 @@ class EnvironmentHelper
         }
 
         $content = file_get_contents($shellFile);
-        if ($content === false) {
+        if (false === $content) {
             return false;
         }
-        return strpos($content, "export $envVarName=") !== false;
+
+        return false !== strpos($content, "export $envVarName=");
     }
 
     /**
      * Get the shell profile file based on the user's environment.
      * This method checks for common shell profile files like .bash_profile, .bashrc, and .zshrc.
      * It returns the first one found or null if none are found.
-     * @return string|null
      */
     public static function getShell(): ?string
     {
@@ -97,26 +89,24 @@ class EnvironmentHelper
     /**
      * Get an environment variable from the shell profile file.
      * This method reads the shell profile file and extracts the value of the specified environment variable.
-     * @param  string      $envVarName
-     * @return string|null
      */
     public static function getEnvVarFromShell(string $envVarName): ?string
     {
         $shell = self::getShell();
         if ($shell && file_exists($shell)) {
             $content = file_get_contents($shell);
-            if ($content !== false) {
+            if (false !== $content) {
                 preg_match("/export $envVarName='([^']+)'/", $content, $matches);
+
                 return $matches[1] ?? null;
             }
         }
+
         return null;
     }
 
     /**
      * Remove an environment variable from the user's shell profile file and the PHP environment.
-     * @param  string $envVarName
-     * @return bool
      */
     public static function removeEnvVar(string $envVarName): bool
     {
@@ -125,10 +115,10 @@ class EnvironmentHelper
 
         if ($shell && file_exists($shell)) {
             $content = file_get_contents($shell);
-            if ($content !== false) {
+            if (false !== $content) {
                 // Remove the line containing the environment variable
                 $updatedContent = preg_replace("/^export $envVarName='[^']*'\\n?/m", '', $content);
-                if ($updatedContent !== null) {
+                if (null !== $updatedContent) {
                     file_put_contents($shell, $updatedContent);
                 }
             }

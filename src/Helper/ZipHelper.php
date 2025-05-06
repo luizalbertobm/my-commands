@@ -2,21 +2,20 @@
 
 namespace MyCommands\Helper;
 
-use ZipArchive;
-
 class ZipHelper
 {
     /**
      * Compresses a directory into a zip file.
      *
-     * @param  string            $sourceDir Path to the directory to zip
-     * @param  string            $zipPath   Path where the zip file will be created
+     * @param string $sourceDir Path to the directory to zip
+     * @param string $zipPath   Path where the zip file will be created
+     *
      * @throws \RuntimeException If zip creation fails
      */
     public function zipDirectory(string $sourceDir, string $zipPath): void
     {
-        $zip = new ZipArchive();
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        $zip = new \ZipArchive();
+        if (true !== $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
             throw new \RuntimeException("Failed to create zip file at $zipPath");
         }
 

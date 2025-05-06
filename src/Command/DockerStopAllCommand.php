@@ -2,12 +2,12 @@
 
 namespace MyCommands\Command;
 
+use MyCommands\Helper\DockerHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use MyCommands\Helper\DockerHelper;
 
 #[AsCommand(
     name: 'docker:stop-all',
@@ -25,11 +25,13 @@ class DockerStopAllCommand extends Command
             $ids = $dockerHelper->getContainerIds();
         } catch (\RuntimeException $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
 
         if (empty($ids)) {
             $io->info('No containers are running.');
+
             return Command::SUCCESS;
         }
 
@@ -38,6 +40,7 @@ class DockerStopAllCommand extends Command
 
         if (!$io->confirm('Do you want to stop all containers?', true)) {
             $io->warning('Operation cancelled.');
+
             return Command::SUCCESS;
         }
 
@@ -45,9 +48,10 @@ class DockerStopAllCommand extends Command
             $stopped = $dockerHelper->stopContainers($ids);
         } catch (\RuntimeException $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
-        $io->success('Stopped containers: ' . implode(', ', $stopped));
+        $io->success('Stopped containers: '.implode(', ', $stopped));
 
         return Command::SUCCESS;
     }

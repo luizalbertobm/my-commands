@@ -1,4 +1,5 @@
 <?php
+
 namespace MyCommands\Helper;
 
 use Symfony\Component\Process\Process;
@@ -15,7 +16,7 @@ class DockerHelper
         }
 
         $output = trim($process->getOutput());
-        if ($output === '') {
+        if ('' === $output) {
             return [];
         }
 
@@ -55,7 +56,7 @@ class DockerHelper
         }
 
         $output = trim($process->getOutput());
-        if ($output === '') {
+        if ('' === $output) {
             return [];
         }
 
@@ -76,7 +77,7 @@ class DockerHelper
         }
 
         $stopped = trim($process->getOutput());
-        if ($stopped === '') {
+        if ('' === $stopped) {
             return [];
         }
 

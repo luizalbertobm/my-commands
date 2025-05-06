@@ -23,6 +23,7 @@ class GitStashRestoreCommand extends Command
         $stashes = GitHelper::listStashes();
         if (empty($stashes)) {
             $io->warning('No stashes found.');
+
             return Command::SUCCESS;
         }
 
@@ -32,23 +33,24 @@ class GitStashRestoreCommand extends Command
         foreach ($lastStashes as $index => $stash) {
             $stashOptions[$index] = sprintf('%s', $stash);
         }
-        
+
         if (count($stashes) > 5) {
-            $io->note('Showing only the last 5 stashes. There are ' . count($stashes) . ' stashes in total.');
+            $io->note('Showing only the last 5 stashes. There are '.count($stashes).' stashes in total.');
         }
 
         // Use the choice method to let the user select a stash
         $selectedOption = $io->choice('Select a stash to apply', $stashOptions);
-        
+
         // Extract the index from the selected option
         preg_match('/^\[(\d+)\]/', $selectedOption, $matches);
-        $selectedIndex = (int)$matches[1];
-        
+        $selectedIndex = (int) $matches[1];
+
         // Apply the selected stash
         try {
             GitHelper::applyStash($selectedIndex);
         } catch (\Exception $e) {
-            $io->error('Failed to apply stash: ' . $e->getMessage());
+            $io->error('Failed to apply stash: '.$e->getMessage());
+
             return Command::FAILURE;
         }
 

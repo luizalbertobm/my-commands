@@ -15,6 +15,7 @@ class GitHelper
     {
         $process = new Process(['git', '--version']);
         $process->run();
+
         return $process->isSuccessful();
     }
 
@@ -23,6 +24,7 @@ class GitHelper
         $cmd = $mode ? ['git', 'diff', $mode] : ['git', 'diff'];
         $process = new Process($cmd);
         $process->run();
+
         return $process->getOutput();
     }
 
@@ -66,7 +68,8 @@ class GitHelper
         if ($lang) {
             $commitPrompt = str_replace('{language}', $lang, $commitPrompt);
         }
-        return $commitPrompt . "\n" . $diff;
+
+        return $commitPrompt."\n".$diff;
     }
 
     public static function stashChanges(?string $comment = null): void
@@ -102,6 +105,7 @@ class GitHelper
             throw new ProcessFailedException($process);
         }
     }
+
     public static function dropStash(int $index): void
     {
         if (!self::isGitAvailable()) {
@@ -119,8 +123,9 @@ class GitHelper
     /**
      * List all stashes.
      *
-     * @return array<string>     An array of stash entries.
-     * @throws \RuntimeException If Git is not available or the command fails.
+     * @return array<string> an array of stash entries
+     *
+     * @throws \RuntimeException if Git is not available or the command fails
      */
     public static function listStashes(): array
     {
@@ -137,6 +142,7 @@ class GitHelper
 
         return explode("\n", trim($process->getOutput()));
     }
+
     public static function softRevertLastCommit(): void
     {
         if (!self::isGitAvailable()) {

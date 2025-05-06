@@ -19,6 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class AIAskCommand extends Command
 {
     private SymfonyStyle $io;
+
     public function __construct()
     {
         parent::__construct();
@@ -52,12 +53,13 @@ class AIAskCommand extends Command
             $prompt,
             [
                 'model' => $input->getOption('model'),
-                'max_tokens' => (int)$input->getOption('max-tokens'),
+                'max_tokens' => (int) $input->getOption('max-tokens'),
             ]
         );
 
         if (empty($responseData['choices'])) {
             $this->io->error(Message::NO_RESPONSE->value);
+
             return Command::FAILURE;
         }
 
@@ -82,15 +84,15 @@ class AIAskCommand extends Command
 
         if (!$apiKey) {
             throw new \RuntimeException(Message::API_KEY_NOT_FOUND->value);
-        };
+        }
 
         return $apiKey;
     }
 
     /**
      * Summary of processResponse.
-     * @param  array<string, mixed> $data
-     * @return void
+     *
+     * @param array<string, mixed> $data
      */
     private function processResponse(array $data): void
     {

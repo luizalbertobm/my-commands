@@ -11,7 +11,7 @@ class OpenAIPayload
         public readonly string $model = 'gpt-4-turbo',
         public readonly int $maxTokens = 600,
         public readonly float $temperature = 0.7,
-        public readonly string $systemPrompt = 'You are a Linux terminal assistant.'
+        public readonly string $systemPrompt = 'You are a Linux terminal assistant.',
     ) {
     }
 

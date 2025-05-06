@@ -2,16 +2,15 @@
 
 namespace MyCommands\Command;
 
+use MyCommands\Helper\DockerHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Process\Process;
-use MyCommands\Helper\DockerHelper;
 
 #[AsCommand(
-    name: 'docker:list', 
+    name: 'docker:list',
     description: 'Lists running Docker containers and allows accessing bash in one of them.'
 )]
 class DockerListCommand extends Command
@@ -25,11 +24,13 @@ class DockerListCommand extends Command
             $rows = $dockerHelper->getContainerRows();
         } catch (\RuntimeException $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
 
         if (empty($rows)) {
             $io->info('No running Docker containers.');
+
             return Command::SUCCESS;
         }
 

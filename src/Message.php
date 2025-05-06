@@ -31,8 +31,6 @@ enum Message: string
 
     /**
      * Format message with sprintf.
-     *
-     * @param mixed ...$args
      */
     public function format(mixed ...$args): string
     {

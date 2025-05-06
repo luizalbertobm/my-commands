@@ -28,7 +28,8 @@ class GitStashCommand extends Command
             GitHelper::stashChanges($comment);
             $io->success('Changes have been successfully stashed.');
         } catch (\Exception $e) {
-            $io->error('Failed to stash changes: ' . $e->getMessage());
+            $io->error('Failed to stash changes: '.$e->getMessage());
+
             return Command::FAILURE;
         }
 

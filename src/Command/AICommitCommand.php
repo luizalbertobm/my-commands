@@ -21,6 +21,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class AICommitCommand extends Command
 {
     private SymfonyStyle $io;
+
     public function __construct()
     {
         parent::__construct();
@@ -40,11 +41,11 @@ class AICommitCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         if ($input->getOption('reset')) {
-            $this->io->note("Reseting env variable:".OpenAIService::OPENAI_API_KEY);
+            $this->io->note('Reseting env variable:'.OpenAIService::OPENAI_API_KEY);
             EnvironmentHelper::removeEnvVar(
                 OpenAIService::OPENAI_API_KEY,
             );
-            $this->io->success("Env variable removed");
+            $this->io->success('Env variable removed');
 
             return Command::SUCCESS;
         }
@@ -68,25 +69,26 @@ class AICommitCommand extends Command
         try {
             $prompt = GitHelper::buildCommitPrompt($language);
         } catch (\RuntimeException $e) {
-            if ($e->getCode() === Command::INVALID) {
+            if (Command::INVALID === $e->getCode()) {
                 $this->io->warning($e->getMessage());
             } else {
                 $this->io->error($e->getMessage());
             }
 
-            return (int)$e->getCode();
+            return (int) $e->getCode();
         }
 
         $responseData = $openAIService->processPrompt(
             $prompt,
             [
                 'model' => $input->getOption('model'),
-                'max_tokens' => (int)$input->getOption('max-tokens'),
+                'max_tokens' => (int) $input->getOption('max-tokens'),
             ]
         );
 
         if (empty($responseData['choices'])) {
             $this->io->error(Message::NO_RESPONSE->value);
+
             return Command::FAILURE;
         }
 
@@ -97,12 +99,11 @@ class AICommitCommand extends Command
 
     /**
      * Summary of processResponse.
-     * @param  array<string, mixed> $data
-     * @return void
+     *
+     * @param array<string, mixed> $data
      */
     private function processResponse(array $data): void
     {
-
         $this->io->section('Commit message');
         foreach ($data['choices'] as $choice) {
             $message = $choice['message']['content'] ?? '';
@@ -125,7 +126,8 @@ class AICommitCommand extends Command
     /**
      * Clean the message by removing unwanted characters.
      *
-     * @param  string $message The message to clean
+     * @param string $message The message to clean
+     *
      * @return string The cleaned message
      */
     private function cleanMessage(string $message): string
@@ -137,14 +139,14 @@ class AICommitCommand extends Command
         // Primeiro remover blocos de código completos se existirem
         $result = preg_replace('/^```[\w]*\s*([\s\S]*?)\s*```$/m', '$1', $message);
         // Garantir que o resultado é string
-        $result = $result === null ? $message : $result;
+        $result = null === $result ? $message : $result;
 
         // Remover outros caracteres especiais comuns no início e fim
         $result = preg_replace('/^[\s`*#>_~\-+:"\']*/', '', $result);
-        $result = $result === null ? $message : $result;
+        $result = null === $result ? $message : $result;
 
         $result = preg_replace('/[\s`*#>_~\-+:"\']*$/', '', $result);
-        $result = $result === null ? $message : $result;
+        $result = null === $result ? $message : $result;
 
         // Finalmente um trim simples para espaços extras
         return trim($result);
@@ -166,7 +168,7 @@ class AICommitCommand extends Command
 
         if (!$apiKey) {
             throw new \RuntimeException(Message::API_KEY_NOT_FOUND->value);
-        };
+        }
 
         return $apiKey;
     }

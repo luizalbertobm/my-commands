@@ -18,7 +18,7 @@ class ZipAllCommand extends Command
         $cwd = getcwd();
         $targetDir = $cwd;
 
-        $zipPath = $cwd . DIRECTORY_SEPARATOR . basename($cwd) . '.zip';
+        $zipPath = $cwd.DIRECTORY_SEPARATOR.basename($cwd).'.zip';
 
         // Use ZipHelper to perform zipping
         $helper = new ZipHelper();
@@ -26,10 +26,11 @@ class ZipAllCommand extends Command
             $helper->zipDirectory($targetDir, $zipPath);
         } catch (\RuntimeException $e) {
             $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
 
-        $io->success('Zip archive created at: ' . $zipPath);
+        $io->success('Zip archive created at: '.$zipPath);
 
         return Command::SUCCESS;
     }

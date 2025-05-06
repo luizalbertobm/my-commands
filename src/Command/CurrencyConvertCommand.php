@@ -17,7 +17,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class CurrencyConvertCommand extends Command
 {
-
     private HttpClientInterface $httpClient;
 
     public function __construct()
@@ -55,24 +54,27 @@ class CurrencyConvertCommand extends Command
                 if (!is_numeric($value) || $value <= 0) {
                     throw new \RuntimeException('The amount must be a positive number.');
                 }
+
                 return $value;
             });
         }
 
         if (!$from) {
             $from = $io->ask('Enter the source currency (e.g., USD)', null, function ($value) {
-                if (strlen($value) !== 3) {
+                if (3 !== strlen($value)) {
                     throw new \RuntimeException('The source currency must be a 3-letter code.');
                 }
+
                 return strtoupper($value);
             });
         }
 
         if (!$to) {
             $to = $io->ask('Enter the target currency (e.g., EUR)', null, function ($value) {
-                if (strlen($value) !== 3) {
+                if (3 !== strlen($value)) {
                     throw new \RuntimeException('The target currency must be a 3-letter code.');
                 }
+
                 return strtoupper($value);
             });
         }
@@ -88,6 +90,7 @@ class CurrencyConvertCommand extends Command
 
             if (!isset($data[strtolower($from)][strtolower($to)])) {
                 $io->error('Invalid target currency.');
+
                 return Command::FAILURE;
             }
 
@@ -95,9 +98,11 @@ class CurrencyConvertCommand extends Command
             $convertedAmount = $amount * $rate;
 
             $io->success(sprintf('%s %s is equal to %.2f %s', $amount, strtoupper($from), $convertedAmount, strtoupper($to)));
+
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $io->error('Failed to fetch conversion rate: ' . $e->getMessage());
+            $io->error('Failed to fetch conversion rate: '.$e->getMessage());
+
             return Command::FAILURE;
         }
     }

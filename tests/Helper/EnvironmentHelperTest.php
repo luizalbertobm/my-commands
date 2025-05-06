@@ -19,9 +19,9 @@ class EnvironmentHelperTest extends TestCase
             $this->originalShellContent = file_get_contents($shell);
         } else {
             // Create a temporary shell file for testing
-            $tempShell = sys_get_temp_dir() . '/.test_shell';
+            $tempShell = sys_get_temp_dir().'/.test_shell';
             file_put_contents($tempShell, '');
-            putenv('HOME=' . sys_get_temp_dir());
+            putenv('HOME='.sys_get_temp_dir());
         }
     }
 
@@ -68,7 +68,7 @@ class EnvironmentHelperTest extends TestCase
 
         $this->assertTrue($result);
         $this->assertSame($this->testValue, getenv($this->testEnvVar));
-    
+
         // Verify it was written to shell file
         $shell = EnvironmentHelper::getShell();
         if ($shell) {

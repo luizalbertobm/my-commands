@@ -25,7 +25,8 @@ class GitSoftRevertCommand extends Command
             GitHelper::softRevertLastCommit();
             $io->success('The last commit has been successfully soft reverted. Changes are still in the working directory.');
         } catch (\Exception $e) {
-            $io->error('Failed to soft revert the last commit: ' . $e->getMessage());
+            $io->error('Failed to soft revert the last commit: '.$e->getMessage());
+
             return Command::FAILURE;
         }
 

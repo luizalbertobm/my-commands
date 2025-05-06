@@ -25,15 +25,16 @@ class OpenAIService
         private string $apiKey,
         private OutputInterface $output,
         private string $model = self::DEFAULT_MODEL,
-        private int $maxTokens = 600
+        private int $maxTokens = 600,
     ) {
         $this->browser = new Browser(Loop::get());
     }
 
     /**
      * Summary of processPrompt.
-     * @param  string               $prompt
-     * @param  array<string, mixed> $options
+     *
+     * @param array<string, mixed> $options
+     *
      * @return array<string, mixed> The OpenAI API response data
      */
     public function processPrompt(string $prompt, array $options = []): array
@@ -51,15 +52,17 @@ class OpenAIService
     /**
      * Sends a request to the OpenAI API.
      *
-     * @param  array<string, mixed> $payload The OpenAI API request payload
+     * @param array<string, mixed> $payload The OpenAI API request payload
+     *
      * @return array<string, mixed> The OpenAI API response
-     * @throws \RuntimeException    When the request fails or returns an error
+     *
+     * @throws \RuntimeException When the request fails or returns an error
      */
     private function sendRequest(array $payload): array
     {
         $loop = Loop::get();
         $header = [
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
             'Content-Type' => 'application/json',
         ];
 
@@ -70,8 +73,8 @@ class OpenAIService
         $responseData = null;
 
         $jsonPayload = json_encode($payload);
-        if ($jsonPayload === false) {
-            throw new \RuntimeException('Failed to encode request payload: ' . json_last_error_msg());
+        if (false === $jsonPayload) {
+            throw new \RuntimeException('Failed to encode request payload: '.json_last_error_msg());
         }
 
         $this->browser
@@ -79,7 +82,7 @@ class OpenAIService
             ->then(
                 function (ResponseInterface $response) use (&$responseData, $indicator, $loop) {
                     $indicator->finish('Request completed');
-                    $body = (string)$response->getBody();
+                    $body = (string) $response->getBody();
                     $data = json_decode($body, true) ?: [];
                     $this->renderTokensTable($data['usage'] ?? []);
                     if (isset($data['error'])) {
@@ -91,9 +94,7 @@ class OpenAIService
                 function (\Throwable $e) use (&$responseData, $loop) {
                     $responseData = null;
                     $loop->stop();
-                    throw new \RuntimeException(
-                        Message::API_REQUEST_FAILED->format($e->getMessage())
-                    );
+                    throw new \RuntimeException(Message::API_REQUEST_FAILED->format($e->getMessage()));
                 }
             );
 

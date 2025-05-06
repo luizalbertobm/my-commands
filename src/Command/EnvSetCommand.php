@@ -24,12 +24,14 @@ class EnvSetCommand extends Command
         $envVarName = $io->ask('Enter the name of the environment variable');
         if (!$envVarName) {
             $io->error('Environment variable name cannot be empty.');
+
             return Command::FAILURE;
         }
 
         $envVarValue = $io->ask('Enter the value of the environment variable');
         if (!$envVarValue) {
             $io->error('Environment variable value cannot be empty.');
+
             return Command::FAILURE;
         }
 
@@ -40,6 +42,7 @@ class EnvSetCommand extends Command
             $io->info("Restart your terminal or run `source $shell` (or equivalent) for the changes to take effect.");
         } else {
             $io->error('Failed to set the environment variable.');
+
             return Command::FAILURE;
         }
 

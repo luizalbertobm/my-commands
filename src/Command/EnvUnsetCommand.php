@@ -25,6 +25,7 @@ class EnvUnsetCommand extends Command
         $envVarName = $io->ask('Enter the name of the environment variable to unset');
         if (!$envVarName) {
             $io->error('Environment variable name cannot be empty.');
+
             return Command::FAILURE;
         }
 
@@ -39,6 +40,7 @@ class EnvUnsetCommand extends Command
             ]);
         } else {
             $io->error('Failed to unset the environment variable.');
+
             return Command::FAILURE;
         }
 

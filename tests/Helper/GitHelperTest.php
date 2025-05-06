@@ -44,7 +44,7 @@ class GitHelperTest extends TestCase
     public function testBuildCommitPromptReturnsString()
     {
         // create a file in the project root to simulate changes
-        $filePath = __DIR__ . '/test_file.txt';
+        $filePath = __DIR__.'/test_file.txt';
         file_put_contents($filePath, 'Temporary change');
         // add the file to git
         GitHelper::stageChanges($filePath);
