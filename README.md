@@ -74,11 +74,6 @@ If you prefer to install step by step:
    source ~/.bashrc # or source ~/.zshrc
    ```
 
-5. Verify the installation:
-   ```bash
-   my list
-   ```
-
 ## Usage
 
 Run the following command to see the available commands:
