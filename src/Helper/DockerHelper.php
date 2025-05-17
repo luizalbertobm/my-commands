@@ -6,6 +6,9 @@ use Symfony\Component\Process\Process;
 
 class DockerHelper
 {
+    /**
+     * @return array<int, array<int, string|int>>
+     */
     public function getContainerRows(): array
     {
         $process = new Process(['docker', 'ps', '--format', '{{.ID}}|{{.Names}}|{{.Image}}|{{.Ports}}']);
@@ -46,6 +49,9 @@ class DockerHelper
         return $rows;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getContainerIds(): array
     {
         $process = new Process(['docker', 'ps', '-q']);
@@ -63,6 +69,11 @@ class DockerHelper
         return explode("\n", $output);
     }
 
+    /**
+     * @param array<int, string> $ids
+     *
+     * @return array<int, string>
+     */
     public function stopContainers(array $ids): array
     {
         if (empty($ids)) {

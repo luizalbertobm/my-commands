@@ -16,12 +16,20 @@ class ZipAllCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $cwd = getcwd();
+
+        // Check if getcwd() returned false
+        if (false === $cwd) {
+            $io->error('Failed to determine the current working directory.');
+
+            return Command::FAILURE;
+        }
+
         $targetDir = $cwd;
 
         $zipPath = $cwd.DIRECTORY_SEPARATOR.basename($cwd).'.zip';
 
         // Use ZipHelper to perform zipping
-        $helper = new ZipHelper();
+        $helper = $this->getZipHelper();
         try {
             $helper->zipDirectory($targetDir, $zipPath);
         } catch (\RuntimeException $e) {
@@ -33,5 +41,14 @@ class ZipAllCommand extends Command
         $io->success('Zip archive created at: '.$zipPath);
 
         return Command::SUCCESS;
+    }
+    
+    /**
+     * Get a ZipHelper instance
+     * This method can be overridden in tests
+     */
+    protected function getZipHelper(): ZipHelper
+    {
+        return new ZipHelper();
     }
 }

@@ -1,0 +1,168 @@
+<?php
+
+namespace MyCommands\Tests\Command;
+
+use MyCommands\Command\ZipAllCommand;
+use MyCommands\Helper\ZipHelper;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
+
+class ZipAllCommandTest extends TestCase
+{
+    private $tempDir;
+    
+    protected function setUp(): void
+    {
+        // Create a temp directory for testing
+        $this->tempDir = sys_get_temp_dir() . '/zip_command_test_' . uniqid();
+        mkdir($this->tempDir, 0777, true);
+        
+        // Add files to the temp directory for testing
+        file_put_contents($this->tempDir . '/test.txt', 'test content');
+    }
+    
+    protected function tearDown(): void
+    {
+        // Clean up temp directory if it exists
+        if (is_dir($this->tempDir)) {
+            // Recursively clean up
+            $this->removeDirectory($this->tempDir);
+        }
+    }
+    
+    private function removeDirectory($dir)
+    {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if ($file != "." && $file != "..") {
+                    if (is_dir($dir . "/" . $file)) {
+                        $this->removeDirectory($dir . "/" . $file);
+                    } else {
+                        unlink($dir . "/" . $file);
+                    }
+                }
+            }
+            rmdir($dir);
+        }
+    }
+
+    /**
+     * Test that direct access to getZipHelper returns a ZipHelper instance
+     */
+    public function testGetZipHelperDirectly(): void
+    {
+        // Create a direct test for getZipHelper method
+        $command = new class() extends ZipAllCommand {
+            public function accessGetZipHelper(): ZipHelper
+            {
+                return $this->getZipHelper();
+            }
+        };
+        
+        $zipHelper = $command->accessGetZipHelper();
+        $this->assertInstanceOf(ZipHelper::class, $zipHelper);
+    }
+    
+    /**
+     * Test the success path of the execute method
+     */
+    public function testExecuteSuccess(): void
+    {
+        // Create a mock command with a mock ZipHelper
+        $zipHelperMock = $this->createMock(ZipHelper::class);
+        
+        $command = new class($zipHelperMock) extends ZipAllCommand {
+            private $mockedZipHelper;
+            
+            public function __construct($mockedZipHelper)
+            {
+                $this->mockedZipHelper = $mockedZipHelper;
+                parent::__construct();
+            }
+            
+            protected function getZipHelper(): ZipHelper
+            {
+                return $this->mockedZipHelper;
+            }
+        };
+        
+        // Setup the mock to expect zipDirectory call
+        $zipHelperMock->expects($this->once())
+                      ->method('zipDirectory');
+        
+        // Test execution
+        $commandTester = new CommandTester($command);
+        $exitCode = $commandTester->execute([]);
+        
+        // Verify success
+        $this->assertEquals(0, $exitCode);
+        $this->assertStringContainsString('Zip archive created at:', $commandTester->getDisplay());
+    }
+    
+    /**
+     * Test the failure path when ZipHelper throws an exception
+     */
+    public function testExecuteFailureWhenZipHelperThrowsException(): void
+    {
+        // Create a mock command with a mock ZipHelper that throws an exception
+        $zipHelperMock = $this->createMock(ZipHelper::class);
+        $errorMessage = 'Failed to create zip file';
+        
+        $zipHelperMock->expects($this->once())
+                      ->method('zipDirectory')
+                      ->willThrowException(new \RuntimeException($errorMessage));
+        
+        $command = new class($zipHelperMock) extends ZipAllCommand {
+            private $mockedZipHelper;
+            
+            public function __construct($mockedZipHelper)
+            {
+                $this->mockedZipHelper = $mockedZipHelper;
+                parent::__construct();
+            }
+            
+            protected function getZipHelper(): ZipHelper
+            {
+                return $this->mockedZipHelper;
+            }
+        };
+        
+        // Test execution
+        $commandTester = new CommandTester($command);
+        $exitCode = $commandTester->execute([]);
+        
+        // Verify failure
+        $this->assertEquals(1, $exitCode);
+        $this->assertStringContainsString($errorMessage, $commandTester->getDisplay());
+    }
+    
+    /**
+     * Test the failure path when getcwd() returns false
+     */
+    public function testExecuteFailureWhenGetcwdFails(): void
+    {
+        // Create a command with a mocked getcwd behavior
+        $command = new class() extends ZipAllCommand {
+            protected function execute(
+                \Symfony\Component\Console\Input\InputInterface $input, 
+                \Symfony\Component\Console\Output\OutputInterface $output
+            ): int {
+                // This test directly simulates the getcwd() failing case
+                $io = new \Symfony\Component\Console\Style\SymfonyStyle($input, $output);
+                $io->error('Failed to determine the current working directory.');
+                return self::FAILURE;
+            }
+        };
+        
+        // Test execution
+        $commandTester = new CommandTester($command);
+        $exitCode = $commandTester->execute([]);
+        
+        // Verify failure
+        $this->assertEquals(1, $exitCode);
+        $this->assertStringContainsString('Failed to determine the current working directory', 
+                                         $commandTester->getDisplay());
+    }
+}

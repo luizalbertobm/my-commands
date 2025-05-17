@@ -85,7 +85,6 @@ class AICommitCommand extends Command
                 'max_tokens' => (int) $input->getOption('max-tokens'),
             ],
             true,
-
         );
 
         if (empty($responseData['choices'])) {

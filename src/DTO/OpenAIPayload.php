@@ -26,7 +26,7 @@ class OpenAIPayload
         $content = $this->isCommit
             ? Message::SYSTEM_ROLE_COMMIT->value
             : Message::SYSTEM_ROLE_ASK->value;
-    
+
         return [
             'model' => $this->model,
             'messages' => [

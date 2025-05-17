@@ -31,18 +31,19 @@ test: ## Run all tests
 	$(PHP) vendor/bin/phpunit --testdox --display-deprecations
 	
 test-coverage: ## Run tests with code coverage
-	XDEBUG_MODE=coverage $(PHP) vendor/bin/phpunit --testdox --coverage-html coverage-report
-	@echo "Opening coverage report…"
-	@if [ "$$(uname)" = "Linux" ]; then \
-	  xdg-open coverage-report/index.html; \
-	elif [ "$$(uname)" = "Darwin" ]; then \
-	  open coverage-report/index.html; \
-	elif [ "$$(uname)" = "Windows_NT" ]; then \
-	  start coverage-report/index.html; \
-	else \
-	  echo "Unknown OS, please open coverage-report/index.html manually."; \
-	fi
-	@echo "✅ Coverage report opened."
+	$(MAKE) xdebug.enable
+	XDEBUG_MODE=coverage $(PHP) vendor/bin/phpunit --testdox --coverage-text
+	# @echo "Opening coverage report…"
+	# @if [ "$$(uname)" = "Linux" ]; then \
+	#   xdg-open coverage-report/index.html; \
+	# elif [ "$$(uname)" = "Darwin" ]; then \
+	#   open coverage-report/index.html; \
+	# elif [ "$$(uname)" = "Windows_NT" ]; then \
+	#   start coverage-report/index.html; \
+	# else \
+	#   echo "Unknown OS, please open coverage-report/index.html manually."; \
+	# fi
+	# @echo "✅ Coverage report opened."
 
 xdebug.disable:	## Disable Xdebug for all configured SAPIs
 	@echo "Detected PHP version: $(PHP_VERSION)"

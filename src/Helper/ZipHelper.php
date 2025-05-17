@@ -28,12 +28,19 @@ class ZipHelper
             if (!$file->isFile()) {
                 continue;
             }
-            $filePath = $file->getRealPath();
+            $filePath = $file->getPathname();
             if ($filePath === $zipPath) {
                 continue;
             }
             $relativePath = substr($filePath, strlen($sourceDir) + 1);
-            $zip->addFile($filePath, $relativePath);
+            
+            // For virtual file systems, we need to read the content and add it as a string
+            if (strpos($filePath, 'vfs://') === 0) {
+                $content = file_get_contents($filePath);
+                $zip->addFromString($relativePath, $content);
+            } else {
+                $zip->addFile($filePath, $relativePath);
+            }
         }
 
         $zip->close();

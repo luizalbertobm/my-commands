@@ -45,11 +45,25 @@ class EnvironmentHelper
     }
 
     /**
+     * Check if a file exists and is readable.
+     * This method is primarily used for testing.
+     */
+    public static function isFileReadable(string $filename): bool
+    {
+        return file_exists($filename) && is_readable($filename);
+    }
+
+    /**
      * Check if the environment variable is already in the shell profile file.
      */
     public static function isEnvVarInShellFile(string $envVarName, string $shellFile): bool
     {
         if (!file_exists($shellFile)) {
+            return false;
+        }
+
+        // Use the isFileReadable method to check if the file is readable
+        if (!self::isFileReadable($shellFile)) {
             return false;
         }
 
