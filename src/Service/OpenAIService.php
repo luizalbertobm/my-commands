@@ -37,13 +37,14 @@ class OpenAIService
      *
      * @return array<string, mixed> The OpenAI API response data
      */
-    public function processPrompt(string $prompt, array $options = []): array
+    public function processPrompt(string $prompt, array $options = [], bool $isCommit = false): array
     {
         $payload = new OpenAIPayload(
             prompt: $prompt,
             model: $options['model'] ?? $this->model,
             maxTokens: $options['max_tokens'] ?? $this->maxTokens,
-            temperature: $options['temperature'] ?? 0.7
+            temperature: $options['temperature'] ?? 0.7,
+            isCommit: $isCommit,
         );
 
         return $this->sendRequest($payload->toArray());

@@ -14,7 +14,8 @@ enum Message: string
     case COMMIT_ERR = 'Failed to generate commit message: %s';
     case NO_CHANGES = 'No changes detected to generate a commit message.';
     case GIT_UNAVAILABLE = 'Git is not available on this system.';
-    case SYSTEM_ROLE = 'You are a Linux terminal assistant.';
+    case SYSTEM_ROLE_COMMIT = 'You are an expert in generating commit messages following the Conventional Commits standard. Always respond only with the commit message, in the format: <type>(<optional scope>): <imperative summary up to 50 characters>, and, if necessary, an optional body separated by a blank line. Do not include any other information';
+    case SYSTEM_ROLE_ASK = 'You are a console assistent. the user will ask you questions and you will answer them. Take in consideration that the output will be used in a terminal';
     case CONNECTING = 'Processing your prompt, please wait...';
     case REQUEST_COMPLETED = 'Request completed';
     case UNKNOWN_ERROR = 'Unknown API error';
