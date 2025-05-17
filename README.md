@@ -2,7 +2,7 @@
 
 # My Commands
 
-> A powerful collection of custom terminal commands designed to automate repetitive tasks, boost productivity, and streamline your development workflow.
+> A powerful collection of custom terminal commands built with PHP and Symfony Console that automates repetitive tasks, enhances productivity, and streamlines your development workflow. Easily extend with your own custom commands to tackle your unique challenges.
 
 ## 🎬 Demo
 ![Command Demo](.docs/screen.gif)
