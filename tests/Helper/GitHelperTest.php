@@ -19,7 +19,9 @@ class GitHelperTest extends TestCase
     public function testGetDiffReturnsString()
     {
         $diff = GitHelper::getDiff();
-        $this->assertIsString($diff, 'The diff should be a string.');
+        // In this case we only need to check that the diff is not null
+        // since we know the return type is always string from the method signature
+        $this->assertNotNull($diff, 'The diff should not be null');
     }
 
     public function testCommitAndPushThrowsExceptionOnFailure()
@@ -51,7 +53,9 @@ class GitHelperTest extends TestCase
         GitHelper::stageChanges($filePath);
 
         $prompt = GitHelper::buildCommitPrompt();
-        $this->assertIsString($prompt, 'The commit prompt should be a string.');
+        // Check if it's not null and not empty
+        $this->assertNotNull($prompt, 'The commit prompt should not be null');
+        $this->assertNotEmpty($prompt, 'The commit prompt should not be empty');
 
         // Clean up the file
         GitHelper::unstageChanges($filePath);

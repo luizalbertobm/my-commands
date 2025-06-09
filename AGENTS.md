@@ -4,7 +4,7 @@ These guidelines define what an automated agent needs to do when opening a Pull 
 
 ## Code Requirements
 1. Run `make check` to fix style and execute PHPStan.
-2. **IMPORTANT**: Before running `make test`, install and enable a code coverage driver such as Xdebug or PCOV. Without a coverage driver, the tests will fail. If necessary, use `make xdebug.enable` to enable Xdebug.
+2. **IMPORTANT**: Before running `make test-coverage`, install and enable a code coverage driver such as Xdebug or PCOV. Without a coverage driver, the tests will fail.
 3. Run `make test` to ensure all tests pass.
 4. Make sure commits follow the Conventional Commits pattern.
 
