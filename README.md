@@ -87,7 +87,7 @@ If you prefer step-by-step manual installation:
 
 2. Create a symbolic link for global access:
    ```bash
-   sudo ln -s $(pwd)/bin/console /usr/local/bin/my
+   sudo ln -s $(pwd)/bin/my /usr/local/bin/my
    ```
 
 3. Configure shell autocompletion:
@@ -215,7 +215,7 @@ class YourNewCommand extends Command
 }
 ```
 
-2. Register your command in `bin/console`.
+2. Register your command in `bin/my`.
 
 ## 📦 Publishing to Packagist
 

@@ -23,7 +23,7 @@
     }
   },
   "bin": [
-    "bin/console"
+    "bin/my"
   ],
   "authors": [
     {

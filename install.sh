@@ -20,7 +20,7 @@ if [ -z "$SKIP_COMPOSER_INSTALL" ]; then
 fi
 
 echo "Creating a symbolic link..."
-sudo ln -sf $(pwd)/bin/console /usr/local/bin/my
+sudo ln -sf $(pwd)/bin/my /usr/local/bin/my
 
 # Discover the current shell's configuration file
 shell_config=""
