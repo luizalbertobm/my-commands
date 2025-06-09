@@ -3,6 +3,8 @@ name: Version Tag and Packagist Sync
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - 'README.md'  # Ignore README.md changes to prevent loops
   release:
     types: [ published ]
 
@@ -12,8 +14,55 @@ permissions:
   repository-projects: write
 
 jobs:
-  version-and-sync:
+  test-and-update-coverage:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, zip, xdebug
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run tests with coverage
+        id: coverage_run
+        run: |
+          XDEBUG_MODE=coverage php vendor/bin/phpunit --coverage-text > coverage-output.txt
+          echo "Test completed successfully"
+          cat coverage-output.txt
+
+      - name: Extract coverage percentage
+        id: extract_coverage
+        run: |
+          COVERAGE_DATA=$(cat coverage-output.txt | grep "Lines:" | awk '{print $2}' | head -n 1 | tr -d '%')
+          echo "coverage=$COVERAGE_DATA" >> $GITHUB_OUTPUT
+          echo "Coverage percentage: $COVERAGE_DATA%"
+          rm coverage-output.txt
+        
+      - name: Update README with coverage
+        run: |
+          COVERAGE_DATA="${{ steps.extract_coverage.outputs.coverage }}"
+          # Update the coverage badge in README.md using perl instead of sed for better reliability
+          perl -i -pe 's/!\[COVERAGE [0-9.]+%\]\(https:\/\/img\.shields\.io\/badge\/coverage-[0-9.]+%25-0E1111\?style=flat&logo=php&logoColor=white&labelColor=171717&color=009933\)/![COVERAGE '"$COVERAGE_DATA"'%](https:\/\/img.shields.io\/badge\/coverage-'"$COVERAGE_DATA"'%25-0E1111?style=flat&logo=php&logoColor=white&labelColor=171717&color=009933)/g' README.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --staged --quiet || git commit -m "docs: update coverage badge to ${COVERAGE_DATA}% [skip ci]"
+          git push
+
+  version-and-sync-packagist:
+    runs-on: ubuntu-latest
+    needs: test-and-update-coverage
+    if: github.event_name == 'push'
     
     steps:
     - name: Checkout code
@@ -22,6 +71,13 @@ jobs:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
         persist-credentials: true
+        ref: ${{ github.ref }}
+        # Ensure we get the latest changes including those from the previous job
+        
+    - name: Pull latest changes
+      run: |
+        git pull origin ${{ github.ref_name }}
+        echo "Pulled latest changes including README updates from previous job"
 
     - name: Install jq
       run: |
@@ -49,12 +105,13 @@ jobs:
         PATCH=${VERSION_PARTS[2]:-0}
         
         # Check commit messages for version bump indicators
-        if git log $LATEST_TAG..HEAD --oneline | grep -qE "(BREAKING CHANGE|major):"; then
+        # Exclude commits with [skip ci] in the message (README updates)
+        if git log $LATEST_TAG..HEAD --oneline | grep -v "\[skip ci\]" | grep -qE "(BREAKING CHANGE|major):"; then
           MAJOR=$((MAJOR + 1))
           MINOR=0
           PATCH=0
           echo "Major version bump detected"
-        elif git log $LATEST_TAG..HEAD --oneline | grep -qE "(feat|feature|minor):"; then
+        elif git log $LATEST_TAG..HEAD --oneline | grep -v "\[skip ci\]" | grep -qE "(feat|feature|minor):"; then
           MINOR=$((MINOR + 1))
           PATCH=0
           echo "Minor version bump detected"
