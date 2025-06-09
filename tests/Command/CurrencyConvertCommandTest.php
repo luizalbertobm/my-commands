@@ -5,6 +5,7 @@ namespace MyCommands\Tests\Command;
 use MyCommands\Command\CurrencyConvertCommand;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
@@ -63,5 +64,27 @@ class CurrencyConvertCommandTest extends TestCase
 
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Invalid target currency.', $output);
+    }
+
+    public function testApiFailure(): void
+    {
+        $mockResponse = new MockResponse('Internal Server Error', [
+            'http_code' => 500,
+        ]);
+        $mockClient = new MockHttpClient($mockResponse);
+
+        $command = new CurrencyConvertCommand();
+        $command->setHttpClient($mockClient);
+
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            '--amount' => 100,
+            '--from' => 'USD',
+            '--to' => 'EUR',
+        ]);
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Failed to fetch conversion rate', $output);
+        $this->assertSame(Command::FAILURE, $commandTester->getStatusCode());
     }
 }
