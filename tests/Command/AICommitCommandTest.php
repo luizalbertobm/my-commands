@@ -26,7 +26,7 @@ class AICommitCommandTest extends TestCase
 
     public function testCleanMessageTrimsSpecialChars(): void
     {
-        $input = "***Fix***";
+        $input = '***Fix***';
         $this->assertSame('Fix', $this->callCleanMessage($input));
     }
 

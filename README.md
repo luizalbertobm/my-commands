@@ -106,7 +106,8 @@ If you prefer step-by-step manual installation:
 ### Option 3: Install via Composer
 
 Once this package is available on [Packagist](https://packagist.org) you can
-install it globally with Composer:
+install it globally with Composer. The installer script will run automatically
+after installation:
 
 ```bash
 composer global require luizalbertobm/mycommands
