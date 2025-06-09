@@ -55,7 +55,7 @@ my list
 
 ## 🚀 Installation
 
-You can install My Commands in two ways:
+You can install My Commands in three ways:
 
 ### Option 1: Using the Installation Script (Recommended)
 
@@ -99,6 +99,16 @@ If you prefer step-by-step manual installation:
    ```bash
    source ~/.zshrc  # or source ~/.bashrc
    ```
+
+### Option 3: Install via Composer
+
+Once this package is available on [Packagist](https://packagist.org) you can
+install it globally with Composer:
+
+```bash
+composer global require luizalbertobm/mycommands
+```
+
 
 ## 🔧 Usage
 
@@ -202,6 +212,13 @@ class YourNewCommand extends Command
 ```
 
 2. Register your command in `bin/console`.
+
+## 📦 Publishing to Packagist
+
+1. Push your repository to a public hosting service like GitHub.
+2. Tag a release, for example `git tag v1.0.0 && git push --tags`.
+3. Create an account on [Packagist](https://packagist.org) and submit the repository URL.
+4. Once approved, users can install the package via Composer as shown above.
 
 ## 🤝 Contributing
 
