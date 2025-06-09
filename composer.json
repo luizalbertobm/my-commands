@@ -1,5 +1,5 @@
 {
-    "name": "luizalbertobm/mycommands",
+    "name": "beecodersteam/mycommands",
     "description": "A bunch of useful terminal commands",
     "type": "library",
     "require": {
