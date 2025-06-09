@@ -2,12 +2,23 @@
 
 # My Commands
 
-> A powerful collection of custom terminal commands built with [PHP](https://www.php.net/) and the [Symfony Console component](https://symfony.com/doc/current/components/console.html).
-> Automate repetitive tasks, enhance productivity, and streamline your development workflow.
-> Easily extend with your own commands to tackle your unique challenges.
+A curated suite of CLI tools built with [PHP](https://www.php.net/) and the
+[Symfony Console component](https://symfony.com/doc/current/components/console.html).
+Automate repetitive tasks, streamline your workflow and integrate with OpenAI for
+AI‑powered features. The project is designed for easy extension so you can add
+your own commands whenever needed.
 
 ## 🎬 Demo
 ![Command Demo](.docs/screen.gif)
+
+## Contents
+- [Prerequisites](#-prerequisites)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Development](#-development)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ## 📋 Prerequisites
 
@@ -26,6 +37,21 @@ Before installing and running the project, ensure you have the following:
 - **Docker Management**: Easily list and stop Docker containers
 - **Currency Conversion**: Convert between currencies directly from your terminal
 - **Extensible Architecture**: Easily add your own custom commands
+
+## ⚡ Quick Start
+
+Run the installer script and reload your shell:
+
+```bash
+./install.sh
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+List available commands with:
+
+```bash
+my list
+```
 
 ## 🚀 Installation
 
@@ -186,6 +212,9 @@ Contributions are welcome and appreciated! Here's how you can contribute:
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+If you encounter any problems or have suggestions, please
+[open an issue](https://github.com/luizalbertobm/my-commands/issues).
 
 ## 📝 License
 
