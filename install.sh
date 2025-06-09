@@ -14,8 +14,10 @@ then
     exit 1
 fi
 
-echo "Installing dependencies..."
-composer install
+if [ -z "$SKIP_COMPOSER_INSTALL" ]; then
+    echo "Installing dependencies..."
+    composer install
+fi
 
 echo "Creating a symbolic link..."
 sudo ln -sf $(pwd)/bin/console /usr/local/bin/my

@@ -36,6 +36,14 @@
     "phpunit/phpunit": "^10.5",
     "mikey179/vfsstream": "^1.6"
   },
+  "scripts": {
+    "post-install-cmd": [
+      "bash -c \"SKIP_COMPOSER_INSTALL=1 ./install.sh\""
+    ],
+    "post-update-cmd": [
+      "bash -c \"SKIP_COMPOSER_INSTALL=1 ./install.sh\""
+    ]
+  },
   "license": "MIT"
 }
 

@@ -12,7 +12,7 @@ class DockerHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->tmpDir = sys_get_temp_dir() . '/docker_stub_' . uniqid();
+        $this->tmpDir = sys_get_temp_dir().'/docker_stub_'.uniqid();
         mkdir($this->tmpDir);
         $script = <<<'SH'
 #!/bin/sh
@@ -41,17 +41,17 @@ if [ "$1" = "stop" ]; then
 fi
 exit 0
 SH;
-        $path = $this->tmpDir . '/docker';
+        $path = $this->tmpDir.'/docker';
         file_put_contents($path, $script);
         chmod($path, 0755);
         $this->oldPath = getenv('PATH');
-        putenv('PATH=' . $this->tmpDir . ':' . $this->oldPath);
+        putenv('PATH='.$this->tmpDir.':'.$this->oldPath);
     }
 
     protected function tearDown(): void
     {
-        putenv('PATH=' . $this->oldPath);
-        @unlink($this->tmpDir . '/docker');
+        putenv('PATH='.$this->oldPath);
+        @unlink($this->tmpDir.'/docker');
         @rmdir($this->tmpDir);
     }
 

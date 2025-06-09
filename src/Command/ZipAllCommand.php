@@ -42,10 +42,10 @@ class ZipAllCommand extends Command
 
         return Command::SUCCESS;
     }
-    
+
     /**
      * Get a ZipHelper instance
-     * This method can be overridden in tests
+     * This method can be overridden in tests.
      */
     protected function getZipHelper(): ZipHelper
     {
