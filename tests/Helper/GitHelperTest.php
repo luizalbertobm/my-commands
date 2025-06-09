@@ -6,6 +6,7 @@ use MyCommands\Helper\GitHelper;
 use MyCommands\Message;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class GitHelperTest extends TestCase
 {
@@ -55,5 +56,41 @@ class GitHelperTest extends TestCase
         // Clean up the file
         GitHelper::unstageChanges($filePath);
         unlink($filePath);
+    }
+
+    public function testDropStashRemovesCreatedStash(): void
+    {
+        if (!GitHelper::isGitAvailable()) {
+            $this->markTestSkipped('Git is not available.');
+        }
+
+        $originalCwd = getcwd();
+        $tempDir = sys_get_temp_dir().'/git_test_'.uniqid();
+        mkdir($tempDir);
+
+        chdir($tempDir);
+        exec('git init');
+        file_put_contents('file.txt', 'initial');
+        exec('git add file.txt');
+        exec('git commit -m "init"');
+
+        file_put_contents('file.txt', 'changed');
+        exec('git add file.txt');
+        exec('git stash');
+
+        $process = new Process(['git', 'stash', 'list']);
+        $process->run();
+        $stashesBefore = trim($process->getOutput());
+        $this->assertNotEmpty($stashesBefore);
+
+        GitHelper::dropStash(0);
+
+        $process = new Process(['git', 'stash', 'list']);
+        $process->run();
+        $stashesAfter = trim($process->getOutput());
+        $this->assertEmpty($stashesAfter);
+
+        chdir($originalCwd);
+        exec('rm -rf '.escapeshellarg($tempDir));
     }
 }
