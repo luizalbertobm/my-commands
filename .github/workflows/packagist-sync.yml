@@ -6,6 +6,11 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  contents: write
+  pull-requests: write
+  repository-projects: write
+
 jobs:
   version-and-sync:
     runs-on: ubuntu-latest
@@ -16,6 +21,7 @@ jobs:
       with:
         fetch-depth: 0
         token: ${{ secrets.GITHUB_TOKEN }}
+        persist-credentials: true
 
     - name: Install jq
       run: |
