@@ -1,7 +1,5 @@
 <?php
 
-// src/Service/EnvironmentService.php
-
 namespace MyCommands\Helper;
 
 class EnvironmentHelper
@@ -12,10 +10,10 @@ class EnvironmentHelper
      */
     public static function getEnvVar(string $envVarName): ?string
     {
-        // Verificar no ambiente atual
+        // Check the current environment first
         $value = getenv($envVarName) ?: $_SERVER[$envVarName] ?? null;
 
-        // Se não estiver no ambiente atual, buscar no arquivo de perfil do shell
+        // If not found, look it up in the shell profile file
         if (!$value) {
             $value = self::getEnvVarFromShell($envVarName);
         }
@@ -82,7 +80,7 @@ class EnvironmentHelper
      */
     public static function getShell(): ?string
     {
-        // Obter o diretório home do usuário atual
+        // Get the current user's home directory
         $homeDir = getenv('HOME') ?: (getenv('USERPROFILE') ?: '~');
 
         $files = [
