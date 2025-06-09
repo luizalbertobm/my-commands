@@ -1,0 +1,6 @@
+PHPUnit 10.5.45 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.21 with Xdebug 3.4.2
+Configuration: /home/luiz/projects/study/my-commands/phpunit.xml
+
+............................
