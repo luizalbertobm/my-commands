@@ -1,7 +1,7 @@
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/luizalbertobm/my-commands?utm_source=oss&utm_medium=github&utm_campaign=luizalbertobm%2Fmy-commands&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews) 
 ![PHPStan](https://img.shields.io/badge/PHPStan-0E1111?style=flat&logo=php&logoColor=white&labelColor=171717&color=003399) 
 ![PHP CS Fixer](https://img.shields.io/badge/PHP%20CS%20Fixer-0E1111?style=flat&logo=php&logoColor=white&labelColor=171717&color=003399) 
-![COVERAGE 42.57%](https://img.shields.io/badge/coverage-42.57%25-0E1111?style=flat&logo=php&logoColor=white&labelColor=171717&color=009933)
+![COVERAGE 47.10%](https://img.shields.io/badge/coverage-47.10%25-0E1111?style=flat&logo=php&logoColor=white&labelColor=171717&color=009933)
 
 # My Commands
 
