@@ -1,0 +1,120 @@
+name: Version Tag and Packagist Sync
+
+on:
+  push:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+jobs:
+  version-and-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Install jq
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+    - name: Get latest tag
+      id: latest_tag
+      run: |
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+        echo "Latest tag: $LATEST_TAG"
+    
+    - name: Calculate next version
+      id: next_version
+      run: |
+        LATEST_TAG="${{ steps.latest_tag.outputs.tag }}"
+        # Remove 'v' prefix if present
+        VERSION_NUMBER=${LATEST_TAG#v}
+        
+        # Split version into parts
+        IFS='.' read -ra VERSION_PARTS <<< "$VERSION_NUMBER"
+        MAJOR=${VERSION_PARTS[0]:-0}
+        MINOR=${VERSION_PARTS[1]:-0}
+        PATCH=${VERSION_PARTS[2]:-0}
+        
+        # Check commit messages for version bump indicators
+        if git log $LATEST_TAG..HEAD --oneline | grep -qE "(BREAKING CHANGE|major):"; then
+          MAJOR=$((MAJOR + 1))
+          MINOR=0
+          PATCH=0
+          echo "Major version bump detected"
+        elif git log $LATEST_TAG..HEAD --oneline | grep -qE "(feat|feature|minor):"; then
+          MINOR=$((MINOR + 1))
+          PATCH=0
+          echo "Minor version bump detected"
+        else
+          PATCH=$((PATCH + 1))
+          echo "Patch version bump detected"
+        fi
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        NEW_TAG="v$NEW_VERSION"
+        
+        echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
+        echo "New version: $NEW_TAG"
+    
+    - name: Create and push tag
+      if: github.event_name == 'push'
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        NEW_TAG="${{ steps.next_version.outputs.tag }}"
+        git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
+        git push origin "$NEW_TAG"
+        echo "Created and pushed tag: $NEW_TAG"
+    
+    - name: Generate changelog
+      if: github.event_name == 'push'
+      id: changelog
+      run: |
+        LATEST_TAG="${{ steps.latest_tag.outputs.tag }}"
+        NEW_TAG="${{ steps.next_version.outputs.tag }}"
+        
+        echo "## Changes in $NEW_TAG" > changelog.md
+        echo "" >> changelog.md
+        
+        if [ "$LATEST_TAG" != "v0.0.0" ]; then
+          git log $LATEST_TAG..HEAD --oneline --format="- %s" >> changelog.md
+        else
+          git log --oneline --format="- %s" >> changelog.md
+        fi
+        
+        echo "" >> changelog.md
+        echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$LATEST_TAG...$NEW_TAG" >> changelog.md
+        
+        # Set output for the release body
+        {
+          echo 'body<<EOF'
+          cat changelog.md
+          echo EOF
+        } >> $GITHUB_OUTPUT
+    
+    - name: Create GitHub Release
+      if: github.event_name == 'push'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.next_version.outputs.tag }}
+        name: Release ${{ steps.next_version.outputs.tag }}
+        body: ${{ steps.changelog.outputs.body }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+    
+    - name: Notify Packagist
+      run: |
+        echo "Notifying Packagist about package update..."
+        curl -XPOST -H 'content-type:application/json' \
+          'https://packagist.org/api/update-package?username=beecodersteam&apiToken=${{ secrets.PACKAGIST_TOKEN }}' \
+          -d '{"repository":{"url":"https://github.com/${{ github.repository }}"}}'
