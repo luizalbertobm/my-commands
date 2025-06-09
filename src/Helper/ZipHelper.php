@@ -33,10 +33,13 @@ class ZipHelper
                 continue;
             }
             $relativePath = substr($filePath, strlen($sourceDir) + 1);
-            
+
             // For virtual file systems, we need to read the content and add it as a string
-            if (strpos($filePath, 'vfs://') === 0) {
+            if (0 === strpos($filePath, 'vfs://')) {
                 $content = file_get_contents($filePath);
+                if (false === $content) {
+                    $content = '';
+                }
                 $zip->addFromString($relativePath, $content);
             } else {
                 $zip->addFile($filePath, $relativePath);
