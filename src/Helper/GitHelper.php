@@ -112,7 +112,7 @@ class GitHelper
             throw new \RuntimeException(Message::GIT_UNAVAILABLE->value);
         }
 
-        $process = new Process(['git', 'stash', 'drop', "stash@{$index}"]);
+        $process = new Process(['git', 'stash', 'drop', "stash@{{$index}}"]);
         $process->run();
 
         if (!$process->isSuccessful()) {

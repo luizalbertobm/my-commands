@@ -41,7 +41,7 @@ class AICommitCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         if ($input->getOption('reset')) {
-            $this->io->note('Reseting env variable:'.OpenAIService::OPENAI_API_KEY);
+            $this->io->note('Resetting env variable:'.OpenAIService::OPENAI_API_KEY);
             EnvironmentHelper::removeEnvVar(
                 OpenAIService::OPENAI_API_KEY,
             );

@@ -2,10 +2,23 @@
 
 # My Commands
 
-> A powerful collection of custom terminal commands designed to automate repetitive tasks, boost productivity, and streamline your development workflow.
+A curated suite of CLI tools built with [PHP](https://www.php.net/) and the
+[Symfony Console component](https://symfony.com/doc/current/components/console.html).
+Automate repetitive tasks, streamline your workflow and integrate with OpenAI for
+AI‑powered features. The project is designed for easy extension so you can add
+your own commands whenever needed.
 
 ## 🎬 Demo
 ![Command Demo](.docs/screen.gif)
+
+## Contents
+- [Prerequisites](#-prerequisites)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Development](#-development)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ## 📋 Prerequisites
 
@@ -25,9 +38,24 @@ Before installing and running the project, ensure you have the following:
 - **Currency Conversion**: Convert between currencies directly from your terminal
 - **Extensible Architecture**: Easily add your own custom commands
 
+## ⚡ Quick Start
+
+Run the installer script and reload your shell:
+
+```bash
+./install.sh
+source ~/.zshrc  # or source ~/.bashrc
+```
+
+List available commands with:
+
+```bash
+my list
+```
+
 ## 🚀 Installation
 
-You can install My Commands in two ways:
+You can install My Commands in three ways:
 
 ### Option 1: Using the Installation Script (Recommended)
 
@@ -71,6 +99,16 @@ If you prefer step-by-step manual installation:
    ```bash
    source ~/.zshrc  # or source ~/.bashrc
    ```
+
+### Option 3: Install via Composer
+
+Once this package is available on [Packagist](https://packagist.org) you can
+install it globally with Composer:
+
+```bash
+composer global require luizalbertobm/mycommands
+```
+
 
 ## 🔧 Usage
 
@@ -175,6 +213,13 @@ class YourNewCommand extends Command
 
 2. Register your command in `bin/console`.
 
+## 📦 Publishing to Packagist
+
+1. Push your repository to a public hosting service like GitHub.
+2. Tag a release, for example `git tag v1.0.0 && git push --tags`.
+3. Create an account on [Packagist](https://packagist.org) and submit the repository URL.
+4. Once approved, users can install the package via Composer as shown above.
+
 ## 🤝 Contributing
 
 Contributions are welcome and appreciated! Here's how you can contribute:
@@ -184,6 +229,9 @@ Contributions are welcome and appreciated! Here's how you can contribute:
 3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+If you encounter any problems or have suggestions, please
+[open an issue](https://github.com/luizalbertobm/my-commands/issues).
 
 ## 📝 License
 
