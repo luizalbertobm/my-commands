@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
     paths-ignore:
       - 'README.md'  # Ignore README.md changes to prevent loops
+      - '*.md'       # Ignore other markdown files
+      - 'docs/**'    # Ignore documentation updates
+      - '.gitignore' # Ignore gitignore updates
   release:
     types: [ published ]
 
@@ -19,6 +22,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Get all history
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -26,9 +36,34 @@ jobs:
           php-version: '8.3'
           extensions: mbstring, xml, zip, xdebug
           coverage: xdebug
+          tools: composer:v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
+      - name: Run code quality checks
+        run: |
+          echo "Running PHPStan..."
+          vendor/bin/phpstan analyse src tests --level=5 || echo "PHPStan warnings found, but continuing workflow"
+          
+          # If PHP CS Fixer is installed
+          if [ -f "vendor/bin/php-cs-fixer" ]; then
+            echo "Running PHP CS Fixer..."
+            vendor/bin/php-cs-fixer fix --dry-run --diff || echo "CS Fixer issues found, but continuing workflow"
+          else
+            echo "PHP CS Fixer not installed, skipping"
+          fi
 
       - name: Run tests with coverage
         id: coverage_run
@@ -55,9 +90,25 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          
+          # Check if README.md exists and has been modified
           git add README.md
-          git diff --staged --quiet || git commit -m "docs: update coverage badge to ${COVERAGE_DATA}% [skip ci]"
-          git push
+          
+          # Only commit if there are changes
+          if ! git diff --staged --quiet; then
+            # Check if we have any commits in the repository
+            if git rev-parse --verify HEAD >/dev/null 2>&1; then
+              # Repository has commits, create a new commit
+              git commit -m "docs: update coverage badge to ${COVERAGE_DATA}% [skip ci]"
+              git push
+            else
+              # Empty repository, create an initial commit
+              git commit -m "Initial commit with coverage badge ${COVERAGE_DATA}% [skip ci]"
+              git push --set-upstream origin ${GITHUB_REF#refs/heads/}
+            fi
+          else
+            echo "No changes to README.md, skipping commit"
+          fi
 
   version-and-sync-packagist:
     runs-on: ubuntu-latest
@@ -148,10 +199,33 @@ jobs:
         echo "## Changes in $NEW_TAG" > changelog.md
         echo "" >> changelog.md
         
+        # Function to categorize and format commits
+        generate_formatted_changelog() {
+          echo "### 🚀 Features" >> changelog.md
+          git log $1 --grep="^feat\|^feature\|^minor:" --oneline --format="- %s" | grep -v "\[skip ci\]" >> changelog.md || echo "- No new features" >> changelog.md
+          
+          echo "" >> changelog.md
+          echo "### 🐛 Bug Fixes" >> changelog.md
+          git log $1 --grep="^fix:" --oneline --format="- %s" | grep -v "\[skip ci\]" >> changelog.md || echo "- No bug fixes" >> changelog.md
+          
+          echo "" >> changelog.md
+          echo "### ⚙️ Other Changes" >> changelog.md
+          git log $1 --grep="^chore\|^refactor\|^docs\|^test\|^ci\|^build\|^perf:" --oneline --format="- %s" | grep -v "\[skip ci\]" >> changelog.md || echo "- No other changes" >> changelog.md
+          
+          # Add breaking changes separately with emphasis
+          echo "" >> changelog.md
+          BREAKING_CHANGES=$(git log $1 --grep="BREAKING CHANGE\|^major:" --oneline --format="- **BREAKING**: %s" | grep -v "\[skip ci\]" || echo "")
+          if [ ! -z "$BREAKING_CHANGES" ]; then
+            echo "### ⚠️ BREAKING CHANGES" >> changelog.md
+            echo "$BREAKING_CHANGES" >> changelog.md
+          fi
+        }
+        
         if [ "$LATEST_TAG" != "v0.0.0" ]; then
-          git log $LATEST_TAG..HEAD --oneline --format="- %s" >> changelog.md
+          generate_formatted_changelog "$LATEST_TAG..HEAD"
         else
-          git log --oneline --format="- %s" >> changelog.md
+          # For first release, use all commits
+          generate_formatted_changelog ""
         fi
         
         echo "" >> changelog.md
@@ -180,4 +254,34 @@ jobs:
         echo "Notifying Packagist about package update..."
         curl -XPOST -H 'content-type:application/json' \
           'https://packagist.org/api/update-package?username=beecodersteam&apiToken=${{ secrets.PACKAGIST_TOKEN }}' \
-          -d '{"repository":{"url":"https://github.com/${{ github.repository }}"}}'
+          -d '{"repository":{"url":"https://github.com/${{ github.repository }}"}}' \
+          -f || echo "Warning: Packagist notification failed, but continuing workflow"
+          
+    - name: Post Notification to Slack
+      if: env.SLACK_WEBHOOK != ''
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        VERSION: ${{ steps.next_version.outputs.tag }}
+      run: |
+        if [ -n "$SLACK_WEBHOOK" ]; then
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \"blocks\": [
+              {
+                \"type\": \"header\",
+                \"text\": {
+                  \"type\": \"plain_text\",
+                  \"text\": \"🚀 New Release: $VERSION\"
+                }
+              },
+              {
+                \"type\": \"section\",
+                \"text\": {
+                  \"type\": \"mrkdwn\",
+                  \"text\": \"*Package:* beecodersteam/mycommands\n*Version:* $VERSION\n*GitHub:* <https://github.com/${{ github.repository }}/releases/tag/$VERSION|View Release>\n*Packagist:* <https://packagist.org/packages/beecodersteam/mycommands#$VERSION|View Package>\"
+                }
+              }
+            ]
+          }" $SLACK_WEBHOOK || echo "Failed to send Slack notification"
+        else
+          echo "Skipping Slack notification - no webhook configured"
+        fi
