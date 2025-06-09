@@ -144,9 +144,11 @@ class ZipAllCommandTest extends TestCase
         $command->expects($this->once())
             ->method('getZipHelper')
             ->willReturn($zipHelperMock);
-
-        // Test the command - need to cast to Command since it's a MockObject
-        $commandTester = new CommandTester($command);
+        
+        // Test the command - treating the mock as a Command instance
+        /** @var Command $commandInstance */
+        $commandInstance = $command;
+        $commandTester = new CommandTester($commandInstance);
         $exitCode = $commandTester->execute([]);
 
         // Validate results
